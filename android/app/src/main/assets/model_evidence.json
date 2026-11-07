@@ -1,0 +1,29 @@
+{
+  "dataset_id": "uci_sms_spam_en_v1",
+  "metrics": {
+    "ham_fpr": 0.0011061946902654867,
+    "spam_f1": 0.9512195121951219,
+    "spam_precision": 0.9915254237288136,
+    "spam_recall": 0.9140625
+  },
+  "confusion": {
+    "fn": 11,
+    "fp": 1,
+    "tn": 903,
+    "tp": 117
+  },
+  "support": {
+    "ham": 904,
+    "spam": 128
+  },
+  "split_id": "btc_dev_80_20_seed2026_v1",
+  "evaluation_scope": "development_validation; model selected on train-only 5-fold OOF; previously inspected outer validation, not pristine final test",
+  "dataset_sha256": "7d039a24a6083ed9ef0f806ebad56bbb976e3aeb8de05669173bfdc4996c239d",
+  "split_manifest_sha256": "6fe3229bcca94623b894d687471f7d73041d59b96cc4ecc1f4eccb4b98b1ed65",
+  "artifact_sha256": "d0c7e31a2498f550b12d17edce3910f38d4b459f98c36c14858828ee06ceb37c",
+  "model_version": "uci_cv_balanced_20261107",
+  "threshold": 0,
+  "score_kind": "decision_margin",
+  "model_id": "english_char_svm",
+  "portable_sha256": "98b27fbf4d595a1052f79634bdc571d1af08b1bedecc8af663df55f397324cb7"
+}

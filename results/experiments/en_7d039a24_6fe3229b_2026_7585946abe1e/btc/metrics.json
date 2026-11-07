@@ -1,0 +1,51 @@
+{
+  "accuracy": 0.9699612403100775,
+  "macro_f1": 0.9226826173645097,
+  "spam_f1": 0.8622222222222222,
+  "spam_precision": 1.0,
+  "spam_recall": 0.7578125,
+  "ham_false_positive_rate": 0.0,
+  "classification_report": {
+    "ham": {
+      "precision": 0.9668449197860962,
+      "recall": 1.0,
+      "f1-score": 0.9831430125067971,
+      "support": 904.0
+    },
+    "spam": {
+      "precision": 1.0,
+      "recall": 0.7578125,
+      "f1-score": 0.8622222222222222,
+      "support": 128.0
+    },
+    "accuracy": 0.9699612403100775,
+    "macro avg": {
+      "precision": 0.9834224598930481,
+      "recall": 0.87890625,
+      "f1-score": 0.9226826173645097,
+      "support": 1032.0
+    },
+    "weighted avg": {
+      "precision": 0.9709571777971231,
+      "recall": 0.9699612403100775,
+      "f1-score": 0.9681450850296405,
+      "support": 1032.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      904,
+      0
+    ],
+    [
+      31,
+      97
+    ]
+  ],
+  "labels": [
+    "ham",
+    "spam"
+  ],
+  "split": "dedup exact-normalized, stratified dev 80/20 seed 2026",
+  "note": "Bo du lieu tieng Anh; khong suy luan kha nang nhan dien lua dao tieng Viet."
+}

@@ -1,0 +1,13 @@
+<resources>
+    <color name="loc_brand">#164D50</color>
+    <color name="loc_launch_background">#F6F8F7</color>
+    <style name="Theme.O1Brain.Loc" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/loc_launch</item>
+        <item name="android:colorAccent">@color/loc_brand</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+<style name="Theme.O1Brain.Loc.Light" parent="Theme.O1Brain.Loc"><item name="android:windowBackground">#F6F8F7</item><item name="android:windowLightStatusBar">true</item></style>
+<style name="Theme.O1Brain.Loc.Dark" parent="Theme.O1Brain.Loc"><item name="android:windowBackground">#101C1C</item><item name="android:windowLightStatusBar">false</item></style>
+</resources>

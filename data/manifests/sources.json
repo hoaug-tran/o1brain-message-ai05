@@ -1,0 +1,12 @@
+{
+  "archive_sha256": "1587ea43e58e82b14ff1f5425c88e17f8496bfcdb67a583dbff9eefaf9963ce3",
+  "baseline_code_sha256": "dcfd219f816076ed87cfe59376c164eb9ef23d2349989299019cbaf186fe613e",
+  "baseline_zip_sha256": "d18760638b1b215b6cb4bc06165f74f766b97b08be41bd19459b0d972242867f",
+  "dataset_id": "uci_sms_spam_en_v1",
+  "docx_sha256": "c033cadcd6d91936a8dd0d515549ad363be782cdc88cc68d53262afee8bbdc07",
+  "license_review_status": "BTC SOURCES.md declares UCI CC BY 4.0; original readme restrictions retained in data/raw/readme; no dataset redistribution in package",
+  "retrieved_at_utc": "2026-11-04T12:44:39.521498+00:00",
+  "source_kind": "public_UCI_download_using_BTC_source; not BTC-distributed bytes",
+  "source_sha256": "7d039a24a6083ed9ef0f806ebad56bbb976e3aeb8de05669173bfdc4996c239d",
+  "url": "https://archive.ics.uci.edu/static/public/228/sms+spam+collection.zip"
+}

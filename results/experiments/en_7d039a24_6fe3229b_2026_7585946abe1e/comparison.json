@@ -1,0 +1,140 @@
+{
+  "dataset_id": "uci_sms_spam_en_v1",
+  "final_test_evaluated": false,
+  "paired_f1_delta_bootstrap": {
+    "limitation": "exploratory on reused development validation; not selection-adjusted",
+    "lower_95": 0.048974635307138414,
+    "method": "paired percentile bootstrap F1 delta, seed 2026, 1000 resamples",
+    "upper_95": 0.1349254568250518
+  },
+  "reports": {
+    "english_baseline": {
+      "artifact_bytes": 2366017,
+      "artifact_sha256": "46302847c091a0ccb11c5ffc776bce5ecc0e295dd47bb32e9f82e593e606722e",
+      "baseline_kind": "btc_parser_corrected",
+      "config_sha256": "1174aa29bd6a86eb01fe1124ef7fd73eecf8e54b7ae9ee75dd2435e345dd93bb",
+      "confusion": {
+        "fn": 31,
+        "fp": 0,
+        "tn": 904,
+        "tp": 97
+      },
+      "created_at_utc": "2026-11-05T04:54:53.978620+00:00",
+      "dataset_id": "uci_sms_spam_en_v1",
+      "dataset_sha256": "7d039a24a6083ed9ef0f806ebad56bbb976e3aeb8de05669173bfdc4996c239d",
+      "evaluation_scope": "development_validation; model selected on train-only 5-fold OOF; previously inspected outer validation, not pristine final test",
+      "experiment_id": "en_7d039a24_6fe3229b_2026_7585946abe1e",
+      "latency_ms": {
+        "p50": 0.7515999968745746,
+        "p95": 0.8613500001956708,
+        "p99": 1.1156829942774504
+      },
+      "latency_protocol": "100 warm single-message predictions, validation order; CPU",
+      "metrics": {
+        "ham_fpr": 0.0,
+        "spam_f1": 0.8622222222222222,
+        "spam_precision": 1.0,
+        "spam_recall": 0.7578125
+      },
+      "model_id": "english_baseline",
+      "positive_label": "spam",
+      "seed": 2026,
+      "source_sha256": "7585946abe1e966dab90cf0f8982f179f00a68c36db76f6baef826437291b027",
+      "split_id": "btc_dev_80_20_seed2026_v1",
+      "split_manifest_sha256": "6fe3229bcca94623b894d687471f7d73041d59b96cc4ecc1f4eccb4b98b1ed65",
+      "support": {
+        "ham": 904,
+        "spam": 128
+      },
+      "training_ms": null,
+      "undefined_policy": "null means zero denominator; confusion and support retained"
+    },
+    "english_char_svm": {
+      "artifact_bytes": 3679424,
+      "artifact_sha256": "b4521286e39b39b0be021faeb5179e257adecb7d3cb3295d9527658e3bcf9003",
+      "baseline_kind": null,
+      "config_sha256": "1174aa29bd6a86eb01fe1124ef7fd73eecf8e54b7ae9ee75dd2435e345dd93bb",
+      "confusion": {
+        "fn": 11,
+        "fp": 1,
+        "tn": 903,
+        "tp": 117
+      },
+      "created_at_utc": "2026-11-05T04:54:55.910772+00:00",
+      "dataset_id": "uci_sms_spam_en_v1",
+      "dataset_sha256": "7d039a24a6083ed9ef0f806ebad56bbb976e3aeb8de05669173bfdc4996c239d",
+      "evaluation_scope": "development_validation; model selected on train-only 5-fold OOF; previously inspected outer validation, not pristine final test",
+      "experiment_id": "en_7d039a24_6fe3229b_2026_7585946abe1e",
+      "latency_ms": {
+        "p50": 0.6674500036751851,
+        "p95": 0.9883399980026296,
+        "p99": 1.3967220069025648
+      },
+      "latency_protocol": "100 warm single-message predictions, validation order; CPU",
+      "metrics": {
+        "ham_fpr": 0.0011061946902654867,
+        "spam_f1": 0.9512195121951219,
+        "spam_precision": 0.9915254237288136,
+        "spam_recall": 0.9140625
+      },
+      "model_id": "english_char_svm",
+      "positive_label": "spam",
+      "seed": 2026,
+      "source_sha256": "7585946abe1e966dab90cf0f8982f179f00a68c36db76f6baef826437291b027",
+      "split_id": "btc_dev_80_20_seed2026_v1",
+      "split_manifest_sha256": "6fe3229bcca94623b894d687471f7d73041d59b96cc4ecc1f4eccb4b98b1ed65",
+      "support": {
+        "ham": 904,
+        "spam": 128
+      },
+      "training_ms": 891.7534999927739,
+      "undefined_policy": "null means zero denominator; confusion and support retained"
+    },
+    "english_logreg": {
+      "artifact_bytes": 1336516,
+      "artifact_sha256": "36cf7c4b32025b0945a0e2f9af314ccbbb2d0283b4f37802861569fbfc93c28a",
+      "baseline_kind": null,
+      "config_sha256": "1174aa29bd6a86eb01fe1124ef7fd73eecf8e54b7ae9ee75dd2435e345dd93bb",
+      "confusion": {
+        "fn": 17,
+        "fp": 1,
+        "tn": 903,
+        "tp": 111
+      },
+      "created_at_utc": "2026-11-05T04:54:54.473293+00:00",
+      "dataset_id": "uci_sms_spam_en_v1",
+      "dataset_sha256": "7d039a24a6083ed9ef0f806ebad56bbb976e3aeb8de05669173bfdc4996c239d",
+      "evaluation_scope": "development_validation; model selected on train-only 5-fold OOF; previously inspected outer validation, not pristine final test",
+      "experiment_id": "en_7d039a24_6fe3229b_2026_7585946abe1e",
+      "latency_ms": {
+        "p50": 0.632950002909638,
+        "p95": 0.817860011011362,
+        "p99": 1.1365610084612856
+      },
+      "latency_protocol": "100 warm single-message predictions, validation order; CPU",
+      "metrics": {
+        "ham_fpr": 0.0011061946902654867,
+        "spam_f1": 0.925,
+        "spam_precision": 0.9910714285714286,
+        "spam_recall": 0.8671875
+      },
+      "model_id": "english_logreg",
+      "positive_label": "spam",
+      "seed": 2026,
+      "source_sha256": "7585946abe1e966dab90cf0f8982f179f00a68c36db76f6baef826437291b027",
+      "split_id": "btc_dev_80_20_seed2026_v1",
+      "split_manifest_sha256": "6fe3229bcca94623b894d687471f7d73041d59b96cc4ecc1f4eccb4b98b1ed65",
+      "support": {
+        "ham": 904,
+        "spam": 128
+      },
+      "training_ms": 270.2378999965731,
+      "undefined_policy": "null means zero denominator; confusion and support retained"
+    }
+  },
+  "run_id": "en_7d039a24_6fe3229b_2026_7585946abe1e",
+  "selected_model_id": "english_char_svm",
+  "selection_rule": "Choose maximum Spam F1 from stratified five-fold out-of-fold predictions on training IDs only; tie lower Ham FPR then stable model ID. Outer validation and external labels are never used for selection or thresholds. Existing outer validation has been inspected historically; results are not pristine blind test.",
+  "split_id": "btc_dev_80_20_seed2026_v1",
+  "train_cv_sha256": "6c9c66652db0f1bc22ccf7c35745b1ec44844e07c1f44b6aa2a709b946e8aff5"
+}

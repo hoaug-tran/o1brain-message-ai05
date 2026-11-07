@@ -1,0 +1,8 @@
+{
+  "baseline_kind": "btc_parser_corrected",
+  "executed_sha256": "c08e00d6597a217bb08927fff132301b1053d6dd0fbb3c916de645810449aaf5",
+  "original_sha256": "dcfd219f816076ed87cfe59376c164eb9ef23d2349989299019cbaf186fe613e",
+  "reason": "UCI TSV message quotes are literal; unchanged BTC parser raises ParserError",
+  "replacement_after": "encoding='latin-1',engine='python',quoting=3",
+  "replacement_before": "encoding='latin-1',engine='python'"
+}

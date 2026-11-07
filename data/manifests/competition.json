@@ -1,0 +1,37 @@
+{
+  "problem": "AI05",
+  "team": "O(1).Brain",
+  "deadline": "2026-11-08T12:00:00+07:00",
+  "deadline_source": "organizer video transcript supplied by user; supersedes draft DOCX deadline for current work",
+  "before_deadline": [
+    "slides",
+    "public_demo_url"
+  ],
+  "after_competition": [
+    "slides",
+    "source",
+    "results",
+    "models",
+    "product"
+  ],
+  "languages": {
+    "core": "Python",
+    "extension": "Kotlin Android explicitly confirmed allowed by user"
+  },
+  "training_sources": [
+    "BTC-authorized UCI SMS Spam Collection"
+  ],
+  "external_sources": "evaluation only; no fitting or model/threshold selection",
+  "report_minutes": {
+    "presentation": 10,
+    "demo": 5,
+    "questions": 5
+  },
+  "all_three_members_participate": true,
+  "personal_student_data_allowed": false,
+  "school_production_claim_allowed": false,
+  "video_artifact_requested": false,
+  "team_code": "UNETi22",
+  "submission_directory": "UNETi22_O(1).Brain_AI05",
+  "team_code_source": "user confirmed 2026-11-07 in current conversation"
+}

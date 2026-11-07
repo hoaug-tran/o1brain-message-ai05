@@ -1,0 +1,20 @@
+{
+  "active_model_id": "english_char_svm",
+  "comparison": "results/experiments/uci_cv_balanced_20261107/comparison.json",
+  "comparison_sha256": "71c3ddbb3cd61d129125056ef469d11ddb3cce5098f457a099d0d07bd9ba3c86",
+  "models": {
+    "english_baseline": {
+      "artifact": "english_baseline/en_7d039a24_6fe3229b_2026_7585946abe1e/model.joblib",
+      "artifact_sha256": "46302847c091a0ccb11c5ffc776bce5ecc0e295dd47bb32e9f82e593e606722e",
+      "metadata": "english_baseline/en_7d039a24_6fe3229b_2026_7585946abe1e/metadata.json",
+      "metadata_sha256": "33bf0629e5cc452ef22d2c6a53f3c49ac820602427bc33141d1dd03a9845ebaa"
+    },
+    "english_char_svm": {
+      "artifact": "english_char_svm/uci_cv_balanced_20261107/model.joblib",
+      "artifact_sha256": "d0c7e31a2498f550b12d17edce3910f38d4b459f98c36c14858828ee06ceb37c",
+      "metadata": "english_char_svm/uci_cv_balanced_20261107/metadata.json",
+      "metadata_sha256": "2c0e8237082b0419ee06be77dfd85b5c0cbb1a4286e966c37bc968291bb35f35"
+    }
+  },
+  "run_id": "uci_cv_balanced_20261107"
+}

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6f8f7">
+  <title>O1Brain Message</title>
+  <link rel="stylesheet" href="/assets/style.css">
+  <script src="/assets/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">Đến nội dung</a>
+  <div class="app">
+    <header class="app-header">
+      <a href="#inbox" class="brand" aria-label="O1Brain Message, hộp thư"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 4 7v9c0 7 12 14 12 14s12-7 12-14V7Z"/><path class="logo-cut" d="M10 11h12v8H16l-4 3v-3h-2Z"/></svg><span>O1Brain Message</span></a>
+      <span class="demo-label">Web demo</span>
+    </header>
+    <main id="content" tabindex="-1">
+      <section id="inbox-view" class="screen" aria-labelledby="inbox-title">
+        <div class="screen-heading"><h1 id="inbox-title">Tin nhắn</h1><button class="icon-button" id="compose" aria-label="Soạn tin nhắn" title="Soạn tin nhắn" data-icon="edit"></button></div>
+        <div class="inbox-tools">
+          <label class="search"><span data-icon="search"></span><input id="search" type="search" placeholder="Tìm tin nhắn" aria-label="Tìm tin nhắn" maxlength="2000" autocomplete="off"></label>
+          <div class="filter-line"><label class="filter-label"><span class="sr-only">Lọc hội thoại</span><select id="filter"><option value="inbox">Tất cả</option><option value="unread">Chưa đọc</option><option value="trusted">Ưu tiên</option><option value="archive">Đã lưu trữ</option></select></label><span id="conversation-count" aria-live="polite"></span></div>
+        </div>
+        <p class="sample-note">Hộp thư minh họa</p>
+        <div id="conversations"></div>
+      </section>
+      <section id="chat-view" class="screen chat-screen" aria-labelledby="chat-title" hidden>
+        <div class="chat-heading"><button class="icon-button" id="chat-back" aria-label="Quay lại" data-icon="back"></button><div class="chat-identity"><h1 id="chat-title"></h1><span>Hội thoại mẫu</span></div><button class="icon-button" id="chat-star" aria-label="Thêm ưu tiên" data-icon="star"></button><button class="icon-button" id="chat-menu" aria-label="Tùy chọn hội thoại" data-icon="more"></button></div>
+        <label id="recipient-label" class="recipient" hidden>Người nhận<input id="recipient" maxlength="80" placeholder="Tên hoặc số điện thoại mẫu" autocomplete="off"></label>
+        <div id="messages" class="messages" role="log" aria-label="Tin nhắn mẫu"></div>
+        <form id="message-form" class="composer"><label class="sr-only" for="message-input">Tin nhắn mẫu</label><textarea id="message-input" rows="1" maxlength="2000" placeholder="Tin nhắn mẫu" required></textarea><button class="icon-button send-button" type="submit" aria-label="Gửi trong demo" data-icon="send"></button></form>
+      </section>
+      <section id="check-view" class="screen padded" aria-labelledby="check-title" hidden>
+        <h1 id="check-title">Kiểm tra tin nhắn</h1>
+        <p class="supporting">Nhập SMS tiếng Anh để kiểm tra bằng mô hình và đối chiếu với baseline.</p>
+        <form id="sms-form">
+          <label class="field-label" for="sms">Nội dung tin nhắn</label>
+          <textarea id="sms" name="text" maxlength="2000" rows="5" required placeholder="Nhập hoặc dán tin nhắn tiếng Anh…" aria-describedby="input-help"></textarea>
+          <div class="input-meta"><span id="input-help">Tối đa 2.000 ký tự. Không lưu nội dung.</span><span id="char-count">0 / 2.000</span></div>
+          <div class="sample-actions"><button type="button" id="sample">Mẫu bình thường</button><button type="button" id="sample-spam">Mẫu spam</button><button type="reset" id="clear" class="clear-button">Xóa</button></div>
+          <button type="submit" id="analyze" class="primary-button"><span data-icon="shield"></span>Kiểm tra tin nhắn</button>
+        </form>
+        <div id="result" aria-live="polite" aria-atomic="true"></div>
+        <p class="scope-note">Spam không xác nhận lừa đảo; Ham không bảo đảm an toàn. Điểm mô hình không phải phần trăm chắc chắn.</p>
+      </section>
+      <section id="settings-view" class="screen padded" aria-labelledby="settings-title" hidden>
+        <h1 id="settings-title">Cài đặt</h1>
+        <div class="settings-group"><h2>Chế độ hoạt động</h2><p>Web dùng hội thoại mẫu để trải nghiệm giao diện Android. Không đọc hoặc gửi SMS qua SIM. Phần kiểm tra gọi mô hình thật trên máy chủ.</p></div>
+        <div class="settings-group"><label class="setting-row" for="theme"><span><strong>Giao diện</strong><small>Chọn sáng, tối hoặc theo thiết bị</small></span><select id="theme"><option value="system">Hệ thống</option><option value="light">Sáng</option><option value="dark">Tối</option></select></label></div>
+        <div class="settings-group"><h2>Dữ liệu mẫu</h2><p>Thao tác hộp thư chỉ có hiệu lực trong phiên mở trang này. Không gửi báo cáo cộng đồng từ số minh họa.</p><button id="reset-demo" class="outlined-button">Khôi phục hộp thư mẫu</button></div>
+        <details id="evidence" class="settings-group"><summary>Kết quả mô hình trong ứng dụng</summary><p>UCI SMS tiếng Anh, cùng tập validation cố định 80/20, seed 2026. Chọn mô hình bằng cross-validation trên train. Validation đã được xem trước, không phải test mù.</p><p>{{ near_duplicates }} mẫu validation gần trùng train. Ma trận ghi theo thứ tự TN / FP / FN / TP.</p><div class="table-scroll"><table><caption>Validation: {{ support.get("ham", "?") }} Ham / {{ support.get("spam", "?") }} Spam</caption><thead><tr><th scope="col">Mô hình</th><th scope="col">Spam F1</th><th scope="col">Precision</th><th scope="col">Recall</th><th scope="col">Accuracy</th><th scope="col">Ham FPR</th><th scope="col">TN / FP / FN / TP</th></tr></thead><tbody id="metrics"></tbody></table></div><figure><img src="/figures/class_distribution.png" alt="Phân bố nhãn Ham và Spam trong dữ liệu UCI" width="1300" height="600" loading="lazy"></figure><p><a href="/research/">Báo cáo EDA và so sánh mô hình sau tối ưu</a>.</p><p id="model-info"></p><p>Mô hình huấn luyện và đánh giá trên UCI SMS tiếng Anh. Chưa có khả năng phân loại tiếng Việt đáng tin cậy.</p></details>
+        <div class="settings-group"><h2>O1Brain Message</h2><p>O(1).Brain / AI05. Nguyên mẫu nghiên cứu.</p><p>Nội dung kiểm tra xử lý trong bộ nhớ cho yêu cầu hiện tại. Không truy cập URL trong tin nhắn, không lưu lịch sử kiểm tra.</p></div>
+      </section>
+    </main>
+    <nav class="bottom-nav" aria-label="Điều hướng chính">
+      <a href="#inbox" data-route="inbox" aria-label="Tin nhắn" title="Tin nhắn"><span class="nav-indicator" data-icon="mail"></span></a>
+      <a href="#check" data-route="check" aria-label="Kiểm tra tin nhắn" title="Kiểm tra tin nhắn"><span class="nav-indicator" data-icon="shield"></span></a>
+      <a href="#spam" data-route="spam" aria-label="Tin nhắn rác" title="Tin nhắn rác"><span class="nav-indicator" data-icon="spam"></span><span id="spam-count" class="badge" hidden></span></a>
+      <a href="#settings" data-route="settings" aria-label="Cài đặt" title="Cài đặt"><span class="nav-indicator" data-icon="settings"></span></a>
+    </nav>
+  </div>
+  <dialog id="actions-dialog" aria-labelledby="actions-title"><div class="dialog-heading"><h2 id="actions-title">Tùy chọn hội thoại</h2><button class="icon-button" id="close-actions" aria-label="Đóng" data-icon="close"></button></div><div id="thread-actions"></div></dialog>
+  <div id="snackbar" role="status" hidden></div>
+</body>
+</html>

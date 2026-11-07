@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">O1Brain Message</string>
+    <string name="permission_missing">Chưa có quyền đọc SMS mới. Bạn vẫn có thể kiểm tra thủ công.</string>
+    <string name="manual_label">Nội dung tin nhắn</string>
+    <string name="analyze">Kiểm tra tin nhắn</string>
+    <string name="cleared">Đã xóa dữ liệu lưu trên thiết bị này và tắt kiểm tra tự động.</string>
+    <string name="loading">Đang tải mô hình trên thiết bị.</string>
+    <string name="processing">Đang kiểm tra tin nhắn.</string>
+    <string name="model_unavailable">Chưa thể phân tích vì mô hình chưa được tải. Đóng và mở lại ứng dụng để thử lại.</string>
+    <string name="invalid_input">Chưa kiểm tra được nội dung này. Nhập SMS có nội dung và đúng giới hạn.</string>
+    <string name="unsupported_language">Chưa đủ dữ liệu đánh giá ngôn ngữ này.</string>
+    <string name="spam_result">Tin nhắn rác</string>
+    <string name="ham_result">Chưa phát hiện dấu hiệu rác</string>
+    <string name="not_evaluated">Chưa phân tích</string>
+    <string name="caution">Kết quả có thể sai. Hãy kiểm tra lại các thông báo quan trọng qua kênh tin cậy.</string>
+    <string name="score_note">Điểm chênh lệch quyết định, chưa có xác suất dự đoán đã hiệu chỉnh.</string>
+    <string name="score_format">Điểm: %1$.4f. Nhãn kỹ thuật: %2$s.</string>
+    <string name="model_format">Phiên bản mô hình: %1$s</string>
+    <string name="latency_format">Thời gian xử lý tại chỗ: %1$.2f ms (gồm tải mô hình nếu cần)</string>
+    <string name="busy">Chưa kiểm tra được tin nhắn vì ứng dụng đang bận. Thử lại sau.</string>
+    <string name="storage_error">Chưa lưu hoặc xóa được dữ liệu trên thiết bị. Kiểm tra dung lượng trống rồi thử lại.</string>
+    <string name="feedback_saved">Đã ghi nhận phản hồi trên thiết bị. Phản hồi không tự huấn luyện lại mô hình.</string>
+</resources>

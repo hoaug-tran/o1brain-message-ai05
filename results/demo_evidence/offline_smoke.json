@@ -1,0 +1,6 @@
+{
+  "mode": "outbound socket guard in server process; not physical network disconnect",
+  "status": "PASS",
+  "model_id": "english_char_svm",
+  "private_input_logged": false
+}

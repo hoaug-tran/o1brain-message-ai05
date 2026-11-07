@@ -1,0 +1,41 @@
+{
+  "artifact_bytes": 2366017,
+  "artifact_sha256": "46302847c091a0ccb11c5ffc776bce5ecc0e295dd47bb32e9f82e593e606722e",
+  "baseline_kind": "btc_parser_corrected",
+  "config_sha256": "1174aa29bd6a86eb01fe1124ef7fd73eecf8e54b7ae9ee75dd2435e345dd93bb",
+  "confusion": {
+    "fn": 31,
+    "fp": 0,
+    "tn": 904,
+    "tp": 97
+  },
+  "created_at_utc": "2026-11-05T04:54:53.978620+00:00",
+  "dataset_id": "uci_sms_spam_en_v1",
+  "dataset_sha256": "7d039a24a6083ed9ef0f806ebad56bbb976e3aeb8de05669173bfdc4996c239d",
+  "evaluation_scope": "development_validation; model selected on train-only 5-fold OOF; previously inspected outer validation, not pristine final test",
+  "experiment_id": "en_7d039a24_6fe3229b_2026_7585946abe1e",
+  "latency_ms": {
+    "p50": 0.7515999968745746,
+    "p95": 0.8613500001956708,
+    "p99": 1.1156829942774504
+  },
+  "latency_protocol": "100 warm single-message predictions, validation order; CPU",
+  "metrics": {
+    "ham_fpr": 0.0,
+    "spam_f1": 0.8622222222222222,
+    "spam_precision": 1.0,
+    "spam_recall": 0.7578125
+  },
+  "model_id": "english_baseline",
+  "positive_label": "spam",
+  "seed": 2026,
+  "source_sha256": "7585946abe1e966dab90cf0f8982f179f00a68c36db76f6baef826437291b027",
+  "split_id": "btc_dev_80_20_seed2026_v1",
+  "split_manifest_sha256": "6fe3229bcca94623b894d687471f7d73041d59b96cc4ecc1f4eccb4b98b1ed65",
+  "support": {
+    "ham": 904,
+    "spam": 128
+  },
+  "training_ms": null,
+  "undefined_policy": "null means zero denominator; confusion and support retained"
+}

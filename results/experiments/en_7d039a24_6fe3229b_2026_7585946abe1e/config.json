@@ -1,0 +1,41 @@
+{
+  "baseline": {
+    "alpha": 0.5,
+    "sublinear_tf": true,
+    "word_ngrams": [
+      1,
+      2
+    ]
+  },
+  "candidates": {
+    "english_char_svm": {
+      "C": 1,
+      "features": "char TF-IDF 3-5, sublinear_tf",
+      "reason": "test subword spelling patterns without external data",
+      "seed": 2026
+    },
+    "english_logreg": {
+      "C": 4,
+      "features": "word TF-IDF 1-2, sublinear_tf",
+      "max_iter": 2000,
+      "reason": "test discriminative word classifier against generative NB",
+      "seed": 2026
+    }
+  },
+  "dataset_id": "uci_sms_spam_en_v1",
+  "final_test": "not supplied; not evaluated; no final-test CLI provided",
+  "scope": "public UCI, BTC parser-corrected development 80/20 seed 2026; no final test",
+  "selection_cv": {
+    "fit_preprocessing_within_each_fold": true,
+    "folds": 5,
+    "seed": 2026,
+    "shuffle": true
+  },
+  "selection_rule": "Choose maximum Spam F1 from stratified five-fold out-of-fold predictions on training IDs only; tie lower Ham FPR then stable model ID. Outer validation and external labels are never used for selection or thresholds. Existing outer validation has been inspected historically; results are not pristine blind test.",
+  "thresholds": {
+    "english_baseline": 0.5,
+    "english_char_svm": 0,
+    "english_logreg": 0.5
+  },
+  "trials": 2
+}

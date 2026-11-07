@@ -1,0 +1,27 @@
+services:
+  community:
+    environment:
+      O1BRAIN_TRUST_CLOUDFLARE: "1"
+  tunnel:
+    image: o1brain-community-community
+    restart: unless-stopped
+    network_mode: host
+    entrypoint: /cloudflared
+    command: ["--no-autoupdate", "tunnel", "--config", "/config/tunnel.yml", "run"]
+    volumes:
+      - /usr/local/bin/cloudflared:/cloudflared:ro
+      - ${O1BRAIN_TUNNEL_DIR:?Set O1BRAIN_TUNNEL_DIR}/tunnel.yml:/config/tunnel.yml:ro
+      - ${O1BRAIN_TUNNEL_DIR:?Set O1BRAIN_TUNNEL_DIR}/tunnel.json:/config/tunnel.json:ro
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 128m
+    cpus: 0.5
+    pids_limit: 32
+    logging:
+      driver: local
+      options:
+        max-size: "5m"
+        max-file: "2"

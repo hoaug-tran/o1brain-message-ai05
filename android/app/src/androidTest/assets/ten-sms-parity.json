@@ -1,0 +1,65 @@
+{
+  "cases": [
+    {
+      "actual_label": "ham",
+      "actual_margin": -1.003790650429093,
+      "id": "sms_01",
+      "text": "Hey, I might be 15 minutes late. Can you wait for me outside the library?"
+    },
+    {
+      "actual_label": "ham",
+      "actual_margin": -0.18612200363510756,
+      "id": "sms_02",
+      "text": "Your package could not be delivered due to an unpaid $1.95 fee. Update your payment details at https://parcel-help.example."
+    },
+    {
+      "actual_label": "ham",
+      "actual_margin": -0.623050996518765,
+      "id": "sms_03",
+      "text": "Your verification code is 638291. It will expire in 5 minutes. Do not share this code."
+    },
+    {
+      "actual_label": "ham",
+      "actual_margin": -0.9968635038959262,
+      "id": "sms_04",
+      "text": "Hi Sarah, thanks for helping me with the assignment yesterday. I really appreciate it!"
+    },
+    {
+      "actual_label": "spam",
+      "actual_margin": 1.0356953562354407,
+      "id": "sms_05",
+      "text": "Congratulations! You've been selected to receive a $2,500 reward. Reply CLAIM to collect your prize."
+    },
+    {
+      "actual_label": "ham",
+      "actual_margin": -0.7504737814866282,
+      "id": "sms_06",
+      "text": "Reminder: Your dental appointment is tomorrow at 3:30 PM. Please arrive 10 minutes early."
+    },
+    {
+      "actual_label": "ham",
+      "actual_margin": -0.3703883725635707,
+      "id": "sms_07",
+      "text": "We detected unusual activity on your account. Send us the verification code you just received to prevent suspension."
+    },
+    {
+      "actual_label": "ham",
+      "actual_margin": -0.4381936726541458,
+      "id": "sms_08",
+      "text": "Your order #48291 has shipped. You can check its status in your account."
+    },
+    {
+      "actual_label": "ham",
+      "actual_margin": -1.0828598450423945,
+      "id": "sms_09",
+      "text": "Are you still coming to dinner tonight? We booked a table for seven."
+    },
+    {
+      "actual_label": "spam",
+      "actual_margin": 0.05031232817386211,
+      "id": "sms_10",
+      "text": "Earn up to $800 a day working from home! No experience needed. Reply START to join now."
+    }
+  ],
+  "model_version": "uci_cv_balanced_20261107"
+}

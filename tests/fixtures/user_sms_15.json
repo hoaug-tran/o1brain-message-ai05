@@ -1,0 +1,126 @@
+{
+  "scope": "User-supplied synthetic diagnostic examples, not official benchmark or training data",
+  "label_basis": "User requested ham/spam expectations; promotions assumed unsolicited. These labels do not prove phishing or fraud.",
+  "cases": [
+    {
+      "id": "user_01",
+      "category": "personal",
+      "text": "Hey, are we still meeting at the library at 9 tomorrow?",
+      "reported_margin": -1.312,
+      "reported_label": "ham",
+      "expected_label": "ham"
+    },
+    {
+      "id": "user_02",
+      "category": "otp",
+      "text": "Your verification code is 482916. It expires in 5 minutes. Do not share this code.",
+      "reported_margin": -0.6281,
+      "reported_label": "ham",
+      "expected_label": "ham"
+    },
+    {
+      "id": "user_03",
+      "category": "personal",
+      "text": "Hi John, I left my notebook in your car. Can you bring it tomorrow?",
+      "reported_margin": -1.2267,
+      "reported_label": "ham",
+      "expected_label": "ham"
+    },
+    {
+      "id": "user_04",
+      "category": "delivery",
+      "text": "Your package has been delivered successfully. Thank you for shopping with us.",
+      "reported_margin": -0.4029,
+      "reported_label": "ham",
+      "expected_label": "ham"
+    },
+    {
+      "id": "user_05",
+      "category": "personal",
+      "text": "Reminder: Your appointment is scheduled for Monday at 10:30 AM.",
+      "reported_margin": -0.8599,
+      "reported_label": "ham",
+      "expected_label": "ham"
+    },
+    {
+      "id": "user_06",
+      "category": "promotion",
+      "text": "FLASH SALE! Get 50% OFF all items this weekend. Shop now before the offer ends!",
+      "reported_margin": -0.5675,
+      "reported_label": "ham",
+      "expected_label": "spam"
+    },
+    {
+      "id": "user_07",
+      "category": "promotion",
+      "text": "Exclusive deal for you! Buy one, get one free on selected products. Reply YES for details.",
+      "reported_margin": 0.1317,
+      "reported_label": "spam",
+      "expected_label": "spam"
+    },
+    {
+      "id": "user_08",
+      "category": "promotion",
+      "text": "Join our VIP club today and receive a $20 discount on your next purchase.",
+      "reported_margin": 0.1437,
+      "reported_label": "spam",
+      "expected_label": "spam"
+    },
+    {
+      "id": "user_09",
+      "category": "promotion",
+      "text": "Limited time offer! Enjoy 70% OFF selected electronics. Don't miss out!",
+      "reported_margin": -0.5206,
+      "reported_label": null,
+      "expected_label": "spam"
+    },
+    {
+      "id": "user_10",
+      "category": "prize",
+      "text": "CONGRATULATIONS! You've won a FREE iPhone! Reply WIN now to claim your prize.",
+      "reported_margin": -1.1352,
+      "reported_label": "spam",
+      "expected_label": "spam"
+    },
+    {
+      "id": "user_11",
+      "category": "delivery",
+      "text": "Your parcel delivery failed due to an unpaid fee of $2.99. Update your payment details at https://parcel-check.example.",
+      "reported_margin": -0.3927,
+      "reported_label": "ham",
+      "expected_label": "spam"
+    },
+    {
+      "id": "user_12",
+      "category": "account",
+      "text": "Your student account will be disabled within 24 hours unless you verify your information at https://campus-login.example.",
+      "reported_margin": -0.309,
+      "reported_label": "ham",
+      "expected_label": "spam"
+    },
+    {
+      "id": "user_13",
+      "category": "otp",
+      "text": "We detected suspicious activity on your account. Send us your verification code to prevent permanent suspension.",
+      "reported_margin": -0.4321,
+      "reported_label": "ham",
+      "expected_label": "spam"
+    },
+    {
+      "id": "user_14",
+      "category": "impersonation",
+      "text": "Hi, it's Mom. I lost my phone and I'm using a new number. Please send $500 urgently. I'll explain later.",
+      "reported_margin": -0.6304,
+      "reported_label": "ham",
+      "expected_label": "spam"
+    },
+    {
+      "id": "user_15",
+      "category": "account",
+      "text": "FINAL NOTICE: Your account will be permanently closed in 30 minutes. Confirm your password at https://account-secure.example.",
+      "reported_margin": -0.363,
+      "reported_label": "ham",
+      "expected_label": "spam"
+    }
+  ]
+}

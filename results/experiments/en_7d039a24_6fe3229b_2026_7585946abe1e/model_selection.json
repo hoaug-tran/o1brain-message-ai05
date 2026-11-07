@@ -1,0 +1,8 @@
+{
+  "config_sha256": "1174aa29bd6a86eb01fe1124ef7fd73eecf8e54b7ae9ee75dd2435e345dd93bb",
+  "criterion": "train_only_stratified_5fold_oof_spam_f1_then_ham_fpr",
+  "final_test_evaluated": false,
+  "selected_model_id": "english_char_svm",
+  "source_sha256": "7585946abe1e966dab90cf0f8982f179f00a68c36db76f6baef826437291b027",
+  "split_sha256": "6fe3229bcca94623b894d687471f7d73041d59b96cc4ecc1f4eccb4b98b1ed65"
+}
