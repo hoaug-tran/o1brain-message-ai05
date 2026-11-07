@@ -23,6 +23,9 @@ data class LocalPrediction(
 class PortableClassifier(json: String) {
     val threshold: Double
     val version: String
+    val warningThreshold: Double
+    val automaticThreshold: Double
+    val supportedLanguages: Set<String>
     private val negativeLabel: String
     private val positiveLabel: String
     private val featureIndex: Map<String, Int>
@@ -37,6 +40,14 @@ class PortableClassifier(json: String) {
     init {
         val document = JSONObject(json)
         threshold = document.getDouble("threshold")
+        warningThreshold = document.optDouble("warning_threshold", threshold)
+        automaticThreshold = document.optDouble("automatic_threshold", threshold)
+        val languages = document.optJSONArray("supported_languages")
+        supportedLanguages = if (languages == null) setOf("en") else
+            (0 until languages.length()).map { languages.getString(it) }.toSet()
+        require(supportedLanguages.isNotEmpty() && supportedLanguages.all { it in setOf("en", "vi") })
+        require(warningThreshold.isFinite() && automaticThreshold.isFinite() &&
+            warningThreshold >= threshold && automaticThreshold >= warningThreshold)
         version = document.getString("model_version")
         val labels = document.getJSONArray("labels")
         val vocabulary = document.getJSONArray("vocabulary")

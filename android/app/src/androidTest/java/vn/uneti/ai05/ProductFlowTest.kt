@@ -119,6 +119,11 @@ class ProductFlowTest {
                 finished.countDown()
             }
             assertTrue(finished.await(15, java.util.concurrent.TimeUnit.SECONDS))
+            compose.waitUntil(60_000) {
+                controller.state.value.conversations.any {
+                    it.address == sender && it.latest.modelVersion != null
+                }
+            }
             val conversation = store.conversations().single { it.address == sender }
             assertTrue(conversation.spam)
             assertEquals(1, conversation.unread)
@@ -300,10 +305,8 @@ class ProductFlowTest {
                 System.currentTimeMillis() + 1000,
             )
             conversation = store.conversations().single { it.address == sender }
-            assertTrue(
-                "An ordinary follow-up must not erase earlier high-risk assessment",
-                conversation.spam,
-            )
+            assertFalse("A prior prediction must not hide a later ordinary message", conversation.spam)
+            assertEquals("spam", conversation.messages.first { it.id == id }.riskDecision)
             store.flag(conversation.key, "trusted", true)
             conversation = store.conversations().single { it.address == sender }
             assertFalse(conversation.spam)
@@ -354,10 +357,11 @@ class ProductFlowTest {
             compose.waitUntil(10_000) {
                 controller.state.value.conversations.any { it.address == sender && it.trusted }
             }
-            compose.onNodeWithText(body).performClick()
+            compose.onNodeWithText(body).performTouchInput { longClick() }
             compose.onNodeWithText(context.getString(R.string.report_message)).performClick()
             compose.onNodeWithText(context.getString(R.string.report_scope)).assertIsDisplayed()
-            compose.onNodeWithText(context.getString(R.string.report_save)).assertIsEnabled()
+            compose.onNodeWithText(context.getString(R.string.report_save)).assertIsNotEnabled()
+            compose.onNodeWithText(context.getString(R.string.community_sender_unavailable)).assertIsDisplayed()
             compose.onNodeWithText(context.getString(R.string.cancel)).performClick()
             compose.onNodeWithContentDescription(context.getString(R.string.back)).performClick()
             compose.onNodeWithTag("conversation_filter").performClick()
@@ -374,6 +378,7 @@ class ProductFlowTest {
             compose
                 .onNodeWithContentDescription(context.getString(R.string.conversation_options))
                 .performClick()
+            compose.onNodeWithText(context.getString(R.string.report_message)).assertIsDisplayed()
             compose.onNodeWithText(context.getString(R.string.not_spam)).performClick()
             compose.waitUntil(10_000) {
                 compose.onAllNodesWithTag("nav_inbox").fetchSemanticsNodes().isNotEmpty()

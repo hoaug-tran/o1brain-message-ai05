@@ -2,7 +2,7 @@ package vn.uneti.ai05
 
 import java.text.Normalizer
 
-internal const val PRODUCT_POLICY_VERSION = "policy-6-uci"
+internal const val PRODUCT_POLICY_VERSION = "policy-8"
 
 internal fun assessmentNeedsRefresh(version: String?): Boolean =
     version == null ||
@@ -36,6 +36,11 @@ class ProductDetector(private val english: PortableClassifier) {
                 .findAll(normalized)
                 .map { it.value }
                 .toList()
+        val disguisedScheme = Regex("(?i)\\b(?:https?|hxxps?)\\s*:\\s*/\\s*/\\s*(?=\\S)")
+            .findAll(normalized).any { it.value.any { char -> char.isWhitespace() } || it.value.startsWith("hxxp", ignoreCase = true) }
+        val defangedDomain = Regex("(?i)\\b[a-z0-9-]+\\s*(?:\\[\\s*(?:\\.|dot)\\s*\\]|\\(\\s*(?:\\.|dot)\\s*\\))\\s*[a-z]{2,24}\\b")
+            .containsMatchIn(normalized)
+        if (disguisedScheme || defangedDomain) reasons += "obfuscated_link"
         if (original.codePoints().anyMatch { Character.getType(it) == Character.FORMAT.toInt() })
             reasons += "hidden_unicode"
         if (
@@ -104,7 +109,12 @@ class ProductDetector(private val english: PortableClassifier) {
                     .containsMatchIn(plain)
         )
             reasons += "familiar_money_request"
-        if (!outsideTrainingLanguage && prediction.label == "spam") reasons += "content_model"
+        if ("vi" in english.supportedLanguages)
+            outsideTrainingLanguage = canonical.codePoints().anyMatch {
+                Character.isLetter(it) && Character.UnicodeScript.of(it) != Character.UnicodeScript.LATIN
+            }
+        if (!outsideTrainingLanguage) reasons.remove("language_scope")
+        if (!outsideTrainingLanguage && prediction.margin > english.warningThreshold) reasons += "content_model"
         if (
             Regex(
                     "\\b(send|share|provide|reply)\\b.{0,55}\\b(verification|security|otp|authentication)\\b.{0,20}\\bcode\\b"
@@ -123,7 +133,7 @@ class ProductDetector(private val english: PortableClassifier) {
             reasons += "delivery_payment"
         val decision =
             when {
-                !outsideTrainingLanguage && prediction.margin > english.threshold -> "spam"
+                !outsideTrainingLanguage && prediction.margin > english.automaticThreshold -> "spam"
                 reasons.any { it != "language_scope" } -> "review"
                 outsideTrainingLanguage -> "unassessed"
                 else -> "normal"
@@ -132,8 +142,8 @@ class ProductDetector(private val english: PortableClassifier) {
             decision,
             prediction,
             reasons.distinct(),
-            if (outsideTrainingLanguage) "und" else "en",
-            english.threshold,
+            if (outsideTrainingLanguage) "und" else if ("vi" in english.supportedLanguages) "en_vi" else "en",
+            english.automaticThreshold,
         )
     }
 }
@@ -149,6 +159,7 @@ internal fun riskTitle(decision: String): Int =
 
 internal fun riskReason(reason: String): Int =
     when (reason) {
+        "community_reported" -> R.string.risk_community_reported
         "language_scope" -> R.string.risk_language_scope
         "account_threat_link" -> R.string.risk_account_threat_link
         "credential_request" -> R.string.risk_credential_request

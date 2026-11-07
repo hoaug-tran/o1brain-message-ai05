@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -115,6 +114,8 @@ fun MessengerApp(
     handled: () -> Unit,
 ) {
     val context = LocalContext.current
+    val focusManager = androidx.compose.ui.platform.LocalFocusManager.current
+    val keyboard = androidx.compose.ui.platform.LocalSoftwareKeyboardController.current
     val state by controller.state.collectAsState()
     var route by rememberSaveable { mutableStateOf("inbox") }
     var parentRoute by rememberSaveable { mutableStateOf("inbox") }
@@ -139,10 +140,14 @@ fun MessengerApp(
         rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
             permissionDenied = it.values.any { granted -> !granted }
             permissionRevision++
+            if (it[Manifest.permission.RECEIVE_SMS] == true && controller.state.value.mode == "observer")
+                controller.setMonitoring(true)
             controller.refresh()
         }
     val role =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            permissionDenied = false
+            permissionRevision++
             controller.refresh()
         }
     val hasReceive =
@@ -209,23 +214,25 @@ fun MessengerApp(
     val selected =
         state.conversations.firstOrNull { it.key == selectedKey }
             ?: state.conversations.firstOrNull { address.isNotBlank() && it.address == address }
-    val lifecycle = (context as? ComponentActivity)?.lifecycle
+    val lifecycle = androidx.lifecycle.compose.LocalLifecycleOwner.current.lifecycle
     var resumed by
         remember(lifecycle) {
-            mutableStateOf(lifecycle?.currentState?.isAtLeast(Lifecycle.State.RESUMED) == true)
+            mutableStateOf(lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED))
         }
     DisposableEffect(lifecycle) {
         val observer = LifecycleEventObserver { _, _ ->
-            resumed = lifecycle?.currentState?.isAtLeast(Lifecycle.State.RESUMED) == true
+            resumed = lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
             if (!resumed) {
                 priorityFeedback = null
                 snackbarHost.currentSnackbarData?.dismiss()
             }
         }
-        lifecycle?.addObserver(observer)
-        onDispose { lifecycle?.removeObserver(observer) }
+        lifecycle.addObserver(observer)
+        onDispose { lifecycle.removeObserver(observer); controller.setVisibleThread(null) }
     }
     LaunchedEffect(route) {
+        focusManager.clearFocus()
+        keyboard?.hide()
         actionKey = null
         reportTarget = null
         reportSaved = false
@@ -251,6 +258,7 @@ fun MessengerApp(
         }
     }
     LaunchedEffect(route, selected?.key, selected?.unread, resumed) {
+        controller.setVisibleThread(if (resumed && route == "chat") selected?.key else null)
         if (resumed && route == "chat" && selected != null && selected.unread > 0)
             controller.open(selected)
     }
@@ -301,6 +309,10 @@ fun MessengerApp(
                     )
                 else {
                     route = "inbox"
+                    if (!hasReceive || !hasNotifications) permissions.launch(
+                        if (Build.VERSION.SDK_INT >= 33) arrayOf(Manifest.permission.RECEIVE_SMS, Manifest.permission.POST_NOTIFICATIONS)
+                        else arrayOf(Manifest.permission.RECEIVE_SMS)
+                    )
                 }
             },
             onDefault = {
@@ -433,7 +445,7 @@ fun MessengerApp(
                 }
             },
         )
-    if (state.error != null)
+    if (state.error != null && state.error != "model_unavailable")
         AlertDialog(
             onDismissRequest = { controller.clearError() },
             title = { Text(stringResource(R.string.error_title)) },
@@ -489,7 +501,7 @@ fun MessengerApp(
                         )
                     },
                 ) { padding ->
-                    Box(Modifier.padding(padding)) {
+                    Box(Modifier.padding(padding).consumeWindowInsets(padding)) {
                         when (destination) {
                             "check" -> QuickCheckScreen()
                             "settings" ->
@@ -572,14 +584,14 @@ fun MessengerApp(
                         },
                         actions = {
                             if (selected != null)
-                                IconButton(onClick = { updatePriority(selected) }) {
+                                IconToggleButton(checked = selected.trusted, onCheckedChange = { updatePriority(selected) }) {
                                     Icon(
                                         tint =
                                             if (selected.trusted) MaterialTheme.colorScheme.primary
                                             else MaterialTheme.colorScheme.onSurfaceVariant,
                                         imageVector =
                                             if (selected.trusted) Icons.Default.Star
-                                            else Icons.Outlined.Star,
+                                            else PriorityOutlineIcon,
                                         contentDescription =
                                             stringResource(
                                                 if (selected.trusted) R.string.untrust_sender
@@ -620,25 +632,6 @@ fun MessengerApp(
                                             text = {
                                                 Text(
                                                     stringResource(
-                                                        if (selected.blocked)
-                                                            R.string.unfilter_sender
-                                                        else R.string.filter_sender
-                                                    )
-                                                )
-                                            },
-                                            onClick = {
-                                                menu = false
-                                                controller.flag(
-                                                    selected,
-                                                    "blocked",
-                                                    !selected.blocked,
-                                                )
-                                            },
-                                        )
-                                        DropdownMenuItem(
-                                            text = {
-                                                Text(
-                                                    stringResource(
                                                         if (selected.archived) R.string.unarchive
                                                         else R.string.archive
                                                     )
@@ -650,6 +643,14 @@ fun MessengerApp(
                                                     "archived",
                                                     !selected.archived,
                                                 )
+                                                menu = false
+                                            },
+                                        )
+                                        DropdownMenuItem(
+                                            text = { Text(stringResource(R.string.report_message)) },
+                                            enabled = selected.messages.any { !it.outgoing },
+                                            onClick = {
+                                                reportTarget = selected.messages.lastOrNull { !it.outgoing }
                                                 menu = false
                                             },
                                         )
@@ -711,7 +712,7 @@ fun MessengerApp(
                         selected,
                         state.isDefault,
                         hasSend,
-                        Modifier.padding(padding),
+                        Modifier.padding(padding).consumeWindowInsets(padding),
                         initialBody,
                         onSpamChanged = { moveToSpam ->
                             backFromChat()

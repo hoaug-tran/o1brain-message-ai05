@@ -1,0 +1,20 @@
+{
+  "active_model_id": "english_char_svm",
+  "comparison": "results/experiments/en_7d039a24_6fe3229b_2026_7585946abe1e/comparison.json",
+  "comparison_sha256": "9d4b063ad518a36ce379e5b5fe62f546a6cf9c69baeb9746407d42007b8f2a0c",
+  "models": {
+    "english_baseline": {
+      "artifact": "english_baseline/en_7d039a24_6fe3229b_2026_7585946abe1e/model.joblib",
+      "artifact_sha256": "46302847c091a0ccb11c5ffc776bce5ecc0e295dd47bb32e9f82e593e606722e",
+      "metadata": "english_baseline/en_7d039a24_6fe3229b_2026_7585946abe1e/metadata.json",
+      "metadata_sha256": "33bf0629e5cc452ef22d2c6a53f3c49ac820602427bc33141d1dd03a9845ebaa"
+    },
+    "english_char_svm": {
+      "artifact": "english_char_svm/en_7d039a24_6fe3229b_2026_7585946abe1e/model.joblib",
+      "artifact_sha256": "b4521286e39b39b0be021faeb5179e257adecb7d3cb3295d9527658e3bcf9003",
+      "metadata": "english_char_svm/en_7d039a24_6fe3229b_2026_7585946abe1e/metadata.json",
+      "metadata_sha256": "3403d8010572a3817adb61964e57eca295a47c63bc3c084e5b6ede3d2207cded"
+    }
+  },
+  "run_id": "en_7d039a24_6fe3229b_2026_7585946abe1e"
+}

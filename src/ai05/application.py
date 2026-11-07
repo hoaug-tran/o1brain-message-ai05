@@ -24,7 +24,7 @@ def predict(
         "prediction_id": str(uuid4()),
         "task": "sms_spam_binary",
         "language": "en",
-        "supported_scope": "competition_english",
+        "supported_scope": "expanded_english_experiment",
         "model": classifier.public_info(selected),
         "classification": {
             "label": classification.label,

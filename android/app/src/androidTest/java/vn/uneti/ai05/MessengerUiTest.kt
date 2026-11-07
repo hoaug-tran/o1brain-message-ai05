@@ -96,6 +96,7 @@ class MessengerUiTest {
             compose.onNodeWithTag("nav_spam").assertIsSelected()
             compose.onNodeWithText(context.getString(R.string.spam_banner)).assertDoesNotExist()
             compose.onNodeWithTag("nav_settings").performClick()
+            compose.onNodeWithText(context.getString(R.string.community_title)).assertDoesNotExist()
             compose
                 .onNodeWithText(context.getString(R.string.privacy_messenger))
                 .assertDoesNotExist()

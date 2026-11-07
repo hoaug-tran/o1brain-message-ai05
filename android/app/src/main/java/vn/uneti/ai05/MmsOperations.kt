@@ -28,7 +28,7 @@ object MmsOperations {
         worker.execute {
             try {
                 if (
-                    Telephony.Sms.getDefaultSmsPackage(context) != context.packageName ||
+                    !SmsOperations.isDefault(context) ||
                         data.size > 64 * 1024
                 )
                     return@execute
@@ -76,7 +76,7 @@ object MmsOperations {
     }
 
     fun download(context: Context, id: Long, subscription: Int) {
-        require(Telephony.Sms.getDefaultSmsPackage(context) == context.packageName)
+        require(SmsOperations.isDefault(context))
         val source = Uri.withAppendedPath(Telephony.Mms.CONTENT_URI, id.toString())
         val location =
             context.contentResolver.query(source, arrayOf("ct_l"), null, null, null)?.use {
@@ -132,7 +132,7 @@ object MmsOperations {
                     val id = intent.getLongExtra("notification_id", -1)
                     require(
                         id >= 0 &&
-                            Telephony.Sms.getDefaultSmsPackage(context) == context.packageName
+                            SmsOperations.isDefault(context)
                     )
                     val uri = Uri.withAppendedPath(Telephony.Mms.CONTENT_URI, id.toString())
                     context.contentResolver.update(
@@ -193,7 +193,7 @@ object MmsOperations {
     }
 
     fun send(context: Context, address: String, original: String, attachment: Uri) {
-        require(Telephony.Sms.getDefaultSmsPackage(context) == context.packageName)
+        require(SmsOperations.isDefault(context))
         require(validRecipient(address))
         require(
             original.toByteArray(Charsets.UTF_8).size <= 20_000 && attachment.scheme == "content"
@@ -340,7 +340,7 @@ class MmsReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (
             intent.action != Telephony.Sms.Intents.WAP_PUSH_DELIVER_ACTION ||
-                Telephony.Sms.getDefaultSmsPackage(context) != context.packageName
+                !SmsOperations.isDefault(context)
         )
             return
         val data = intent.getByteArrayExtra("data") ?: return
@@ -364,7 +364,7 @@ class MmsDownloadReceiver : BroadcastReceiver() {
 
 class MmsSentReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        if (Telephony.Sms.getDefaultSmsPackage(context) != context.packageName) return
+        if (!SmsOperations.isDefault(context)) return
         val uri = intent.getStringExtra("mms_uri")?.let { Uri.parse(it) } ?: return
         if (uri.authority != "mms") return
         context.contentResolver.update(

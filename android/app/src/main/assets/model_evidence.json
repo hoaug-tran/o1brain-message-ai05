@@ -1,29 +1,25 @@
 {
-  "dataset_id": "uci_sms_spam_en_v1",
-  "metrics": {
-    "ham_fpr": 0.0011061946902654867,
-    "spam_f1": 0.9512195121951219,
-    "spam_precision": 0.9915254237288136,
-    "spam_recall": 0.9140625
-  },
+  "artifact_sha256": "4ca2cd5b5bb7a1197360d2b2ffb215b306c7d8ce8d120f62a99a52c76ca5347f",
   "confusion": {
-    "fn": 11,
-    "fp": 1,
-    "tn": 903,
-    "tp": 117
+    "fn": 70,
+    "fp": 4,
+    "tn": 1589,
+    "tp": 397
   },
+  "evaluation_scope": "Grouped development holdout, not blind; English frozen validation previously inspected; Vietnamese sample_300 has no labels and is not scored",
+  "metrics": {
+    "ham_fpr": 0.0025109855618330196,
+    "spam_f1": 0.9147465437788018,
+    "spam_precision": 0.9900249376558603,
+    "spam_recall": 0.8501070663811563
+  },
+  "model_version": "bilingual-20261107-v2",
+  "portable_sha256": "7c939cd716b33782157a7cbc3a1776cf19d0946bf80998ff21f6c5ffe69cec3b",
+  "positive_label": "spam",
   "support": {
-    "ham": 904,
-    "spam": 128
+    "ham": 1593,
+    "spam": 467
   },
-  "split_id": "btc_dev_80_20_seed2026_v1",
-  "evaluation_scope": "development_validation; model selected on train-only 5-fold OOF; previously inspected outer validation, not pristine final test",
-  "dataset_sha256": "7d039a24a6083ed9ef0f806ebad56bbb976e3aeb8de05669173bfdc4996c239d",
-  "split_manifest_sha256": "6fe3229bcca94623b894d687471f7d73041d59b96cc4ecc1f4eccb4b98b1ed65",
-  "artifact_sha256": "d0c7e31a2498f550b12d17edce3910f38d4b459f98c36c14858828ee06ceb37c",
-  "model_version": "uci_cv_balanced_20261107",
-  "threshold": 0,
-  "score_kind": "decision_margin",
-  "model_id": "english_char_svm",
-  "portable_sha256": "98b27fbf4d595a1052f79634bdc571d1af08b1bedecc8af663df55f397324cb7"
+  "threshold": 0.4690409485264919,
+  "undefined_policy": "null means zero denominator; confusion and support retained"
 }

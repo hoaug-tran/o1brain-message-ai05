@@ -190,7 +190,8 @@ internal fun QuickCheckScreen() {
                         Text(
                             stringResource(
                                 R.string.language_route,
-                                if (risk.language == "en") "Tiếng Anh"
+                                if (risk.language == "en_vi") "Tiếng Anh và tiếng Việt"
+                                else if (risk.language == "en") "Tiếng Anh"
                                 else stringResource(R.string.language_not_assessed),
                             )
                         )
@@ -241,17 +242,10 @@ internal fun ModelEvidence() {
         return
     }
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        ExternalEvidence()
         Text(
             stringResource(R.string.model_evaluation),
             style = MaterialTheme.typography.titleMedium,
-        )
-        Text(
-            stringResource(
-                R.string.validation_scope,
-                evidence.getJSONObject("support").getInt("ham"),
-                evidence.getJSONObject("support").getInt("spam"),
-            ),
-            style = MaterialTheme.typography.bodySmall,
         )
         listOf("Spam F1" to "spam_f1", "Spam Precision" to "spam_precision", "Ham FPR" to "ham_fpr")
             .forEach { (label, key) ->
@@ -270,10 +264,6 @@ internal fun ModelEvidence() {
             style = MaterialTheme.typography.bodySmall,
         )
         Text(
-            evidence.getString("dataset_id") + "\n" + evidence.getString("split_id"),
-            style = MaterialTheme.typography.bodySmall,
-        )
-        Text(
             stringResource(R.string.model_format, evidence.getString("model_version")),
             style = MaterialTheme.typography.bodySmall,
         )
@@ -281,5 +271,65 @@ internal fun ModelEvidence() {
             stringResource(R.string.threshold_frozen, evidence.getDouble("threshold")),
             style = MaterialTheme.typography.bodySmall,
         )
+    }
+}
+
+@Composable
+private fun ExternalEvidence() {
+    val context = LocalContext.current
+    val report = remember {
+        runCatching {
+                val bytes = context.assets.open("external_evidence.json").use { it.readBytes() }
+                val hash =
+                    MessageDigest.getInstance("SHA-256").digest(bytes).joinToString("") {
+                        "%02x".format(it)
+                    }
+                check(hash == BuildConfig.EXTERNAL_EVIDENCE_SHA256)
+                JSONObject(bytes.toString(Charsets.UTF_8)).also {
+                    check(it.getString("model_sha256") == BuildConfig.MODEL_SHA256)
+                }
+            }
+            .getOrNull()
+    }
+    if (report == null) {
+        Text(stringResource(R.string.evidence_unavailable))
+        return
+    }
+    Text(stringResource(R.string.external_evaluation), style = MaterialTheme.typography.titleMedium)
+    val selected = report.getString("selected_model")
+    for ((key, title) in
+        listOf(
+            "english_external" to R.string.external_english,
+            "vietnamese_external" to R.string.external_vietnamese,
+        )) {
+        if (!report.getJSONObject("datasets").has(key)) continue
+        val evaluation =
+            report
+                .getJSONObject("datasets")
+                .getJSONObject(key)
+                .getJSONObject("reports")
+                .getJSONObject(selected)
+        Text(stringResource(title), style = MaterialTheme.typography.titleSmall)
+        val support = evaluation.getJSONObject("support")
+        Text(
+            stringResource(
+                R.string.external_support,
+                support.getInt("ham"),
+                support.getInt("spam"),
+            ),
+            style = MaterialTheme.typography.bodySmall,
+        )
+        val metrics = evaluation.getJSONObject("metrics")
+        for ((label, metric) in
+            listOf(
+                "Spam F1" to "spam_f1",
+                "Spam Precision" to "spam_precision",
+                "Ham FPR" to "ham_fpr",
+            )) {
+            val value =
+                if (metrics.isNull(metric)) "—"
+                else "%.2f%%".format(java.util.Locale.ROOT, 100 * metrics.getDouble(metric))
+            Text("$label: $value", style = MaterialTheme.typography.bodySmall)
+        }
     }
 }

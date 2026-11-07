@@ -9,9 +9,9 @@ class PredictionRequest(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
     text: str = Field(min_length=1, max_length=2000)
     language_hint: Literal["en", "vi", "mixed", "unknown"] = "en"
-    model_id: Literal[
-        "english_baseline", "english_logreg", "english_char_svm", "english_improved"
-    ] = "english_improved"
+    model_id: Literal["english_baseline", "english_char_svm", "english_improved"] = (
+        "english_improved"
+    )
 
 
 class ModelInfo(BaseModel):
@@ -39,7 +39,7 @@ class PredictionResponse(BaseModel):
     prediction_id: UUID
     task: Literal["sms_spam_binary"]
     language: Literal["en"]
-    supported_scope: Literal["competition_english"]
+    supported_scope: Literal["expanded_english_experiment"]
     model: ModelInfo
     classification: ClassificationDTO
     policy: PolicyDTO
@@ -49,7 +49,9 @@ class PredictionResponse(BaseModel):
 
 class ComparisonResponse(BaseModel):
     input_id: UUID
-    dataset_scope: Literal["competition_english"] = "competition_english"
+    dataset_scope: Literal["expanded_english_experiment"] = (
+        "expanded_english_experiment"
+    )
     comparisons: list[PredictionResponse]
     note: str
 

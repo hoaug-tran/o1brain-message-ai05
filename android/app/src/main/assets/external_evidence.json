@@ -1,0 +1,54 @@
+{
+  "datasets": {
+    "english_external": {
+      "reports": {
+        "bilingual_char_svm": {
+          "confusion": {
+            "fn": 31,
+            "fp": 3,
+            "tn": 1254,
+            "tp": 311
+          },
+          "metrics": {
+            "ham_fpr": 0.002386634844868735,
+            "spam_f1": 0.948170731707317,
+            "spam_precision": 0.9904458598726115,
+            "spam_recall": 0.9093567251461988
+          },
+          "positive_label": "spam",
+          "support": {
+            "ham": 1257,
+            "spam": 342
+          },
+          "undefined_policy": "null means zero denominator; confusion and support retained"
+        }
+      }
+    },
+    "vietnamese_external": {
+      "reports": {
+        "bilingual_char_svm": {
+          "confusion": {
+            "fn": 39,
+            "fp": 1,
+            "tn": 335,
+            "tp": 86
+          },
+          "metrics": {
+            "ham_fpr": 0.002976190476190476,
+            "spam_f1": 0.8113207547169812,
+            "spam_precision": 0.9885057471264368,
+            "spam_recall": 0.688
+          },
+          "positive_label": "spam",
+          "support": {
+            "ham": 336,
+            "spam": 125
+          },
+          "undefined_policy": "null means zero denominator; confusion and support retained"
+        }
+      }
+    }
+  },
+  "model_sha256": "7c939cd716b33782157a7cbc3a1776cf19d0946bf80998ff21f6c5ffe69cec3b",
+  "selected_model": "bilingual_char_svm"
+}

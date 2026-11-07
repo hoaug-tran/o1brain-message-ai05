@@ -29,6 +29,8 @@ class ConversationActionsTest {
             compose.waitUntil(10_000) {
                 controller.state.value.conversations.any { it.address == sender }
             }
+            compose.waitForIdle()
+            InstrumentationRegistry.getInstrumentation().uiAutomation.waitForIdle(300, 5_000)
             compose
                 .onNodeWithTag("conversation_${store.key(sender)}")
                 .performScrollTo()

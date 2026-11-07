@@ -1,5 +1,6 @@
 package vn.uneti.ai05
 
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.platform.app.InstrumentationRegistry
@@ -10,6 +11,22 @@ class QuickCheckTest {
     @get:Rule val compose = createComposeRule()
     private val context
         get() = InstrumentationRegistry.getInstrumentation().targetContext
+
+    @Test
+    fun expandedEvidenceMatchesCurrentModelWithoutSourceDescriptions() {
+        compose.setContent {
+            LocTheme {
+                androidx.compose.foundation.layout.Column(
+                    androidx.compose.ui.Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState())
+                ) { ModelEvidence() }
+            }
+        }
+        compose.onNodeWithText(context.getString(R.string.evidence_unavailable)).assertDoesNotExist()
+        compose.onNodeWithText(context.getString(R.string.external_vietnamese)).performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText("uci_sms_spam_en_v1").assertDoesNotExist()
+        val evidence = org.json.JSONObject(context.assets.open("model_evidence.json").bufferedReader().use { it.readText() }).getJSONObject("confusion")
+        compose.onNodeWithText("TN ${evidence.getInt("tn")} / FP ${evidence.getInt("fp")}\nFN ${evidence.getInt("fn")} / TP ${evidence.getInt("tp")}").performScrollTo().assertIsDisplayed()
+    }
 
     @Test
     fun singleTrainInferenceValidatesInputAndClearsStaleResult() {

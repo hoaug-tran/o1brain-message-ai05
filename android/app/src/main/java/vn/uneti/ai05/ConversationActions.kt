@@ -1,6 +1,8 @@
 package vn.uneti.ai05
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -22,9 +24,10 @@ internal fun ReportMessageDialog(
         onDismissRequest = { if (!state.busy) onDismiss() },
         title = { Text(stringResource(R.string.report_message)) },
         text = {
-            androidx.compose.foundation.layout.Column {
+            Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(address, style = MaterialTheme.typography.titleSmall)
                 Text(stringResource(R.string.report_scope))
+                CommunityStatus(address)
                 listOf(
                         "spam" to R.string.community_spam,
                         "phishing" to R.string.community_phishing,
@@ -49,7 +52,7 @@ internal fun ReportMessageDialog(
             }
         },
         confirmButton = {
-            TextButton(enabled = !state.busy, onClick = { onConfirm(category) }) {
+            TextButton(enabled = !state.busy && runCatching { client.phone(address) }.isSuccess, onClick = { onConfirm(category) }) {
                 Text(stringResource(R.string.report_save))
             }
         },
@@ -134,19 +137,6 @@ internal fun ConversationActions(
                     Text(
                         stringResource(
                             if (conversation.spam) R.string.not_spam else R.string.move_spam
-                        )
-                    )
-                }
-            }
-            item {
-                TextButton(
-                    onClick = { onFlag("blocked", !conversation.blocked) },
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Text(
-                        stringResource(
-                            if (conversation.blocked) R.string.unfilter_sender
-                            else R.string.filter_sender
                         )
                     )
                 }

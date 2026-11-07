@@ -6,7 +6,7 @@
     <string name="cleared">Đã xóa dữ liệu lưu trên thiết bị này và tắt kiểm tra tự động.</string>
     <string name="loading">Đang tải mô hình trên thiết bị.</string>
     <string name="processing">Đang kiểm tra tin nhắn.</string>
-    <string name="model_unavailable">Chưa thể phân tích vì mô hình chưa được tải. Đóng và mở lại ứng dụng để thử lại.</string>
+    <string name="model_unavailable">Chưa tải được bộ lọc trên thiết bị. SMS vẫn được giữ. Kiểm tra bản cập nhật ứng dụng để khôi phục phân tích.</string>
     <string name="invalid_input">Chưa kiểm tra được nội dung này. Nhập SMS có nội dung và đúng giới hạn.</string>
     <string name="unsupported_language">Chưa đủ dữ liệu đánh giá ngôn ngữ này.</string>
     <string name="spam_result">Tin nhắn rác</string>

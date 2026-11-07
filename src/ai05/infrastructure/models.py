@@ -104,5 +104,5 @@ class ModelRegistry:
             "version": metadata["version"],
             "artifact_sha256_prefix": metadata["artifact_sha256"][:12],
             "language": "en",
-            "validation_status": "development_validation_only",
+            "validation_status": metadata["test_protocol_status"],
         }

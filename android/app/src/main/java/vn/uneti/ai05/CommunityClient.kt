@@ -43,6 +43,7 @@ class CommunityClient private constructor(private val context: Context) {
     private val running = AtomicBoolean(false)
     private val preferences = context.getSharedPreferences("community", Context.MODE_PRIVATE)
     private val cipher = LocalCipher()
+    private val reputation = java.util.Collections.synchronizedMap(LinkedHashMap<String, Int>())
     private val executor = ThreadPoolExecutor(1, 1, 0, TimeUnit.MILLISECONDS, ArrayBlockingQueue(8))
     private val main = Handler(Looper.getMainLooper())
     private val mutableState =
@@ -96,7 +97,7 @@ class CommunityClient private constructor(private val context: Context) {
         mutableState.value = mutableState.value.copy(reports = records)
     }
 
-    private fun phone(address: String): String {
+    internal fun phone(address: String): String {
         require(address.length <= 32 && address.matches(Regex("[+0-9 ()-]+"))) { "INVALID_PHONE" }
         val normalized = PhoneNumberUtils.formatNumberToE164(address, "VN") ?: address
         require(normalized.matches(Regex("\\+[1-9][0-9]{7,14}"))) { "INVALID_PHONE" }
@@ -285,6 +286,7 @@ class CommunityClient private constructor(private val context: Context) {
             if (!row.retract) payload.put("category", row.category)
             val response =
                 request(if (row.retract) "/v1/reports/retract" else "/v1/reports", payload)
+            rememberReputation(row.phone, response.getInt("reporters"))
             val remaining = mutableState.value.reports.filterNot { it.phone == row.phone }
             persist(
                 if (row.retract) remaining
@@ -310,8 +312,23 @@ class CommunityClient private constructor(private val context: Context) {
     fun lookup(address: String) = submit {
         val number = phone(address)
         val response = request("/v1/reputation", JSONObject().put("phone", number))
-        mutableState.value =
-            mutableState.value.copy(lookup = number to response.getInt("reporters"))
+        rememberReputation(number, response.getInt("reporters"))
+    }
+
+    private fun rememberReputation(number: String, reporters: Int) {
+        require(reporters >= 0)
+        synchronized(reputation) {
+            if (reputation.size >= 256 && number !in reputation) reputation.remove(reputation.keys.first())
+            reputation[number] = reporters
+        }
+        mutableState.value = mutableState.value.copy(lookup = number to reporters)
+    }
+
+    fun cachedReporters(address: String): Int {
+        val number = runCatching { phone(address) }.getOrNull() ?: return 0
+        return reputation[number] ?: mutableState.value.reports.firstOrNull {
+            it.phone == number && it.status == "sent" && !it.retract
+        }?.reporters ?: 0
     }
 
     companion object {

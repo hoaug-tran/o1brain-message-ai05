@@ -30,8 +30,5 @@
   "all_three_members_participate": true,
   "personal_student_data_allowed": false,
   "school_production_claim_allowed": false,
-  "video_artifact_requested": false,
-  "team_code": "UNETi22",
-  "submission_directory": "UNETi22_O(1).Brain_AI05",
-  "team_code_source": "user confirmed 2026-11-07 in current conversation"
+  "video_artifact_requested": false
 }

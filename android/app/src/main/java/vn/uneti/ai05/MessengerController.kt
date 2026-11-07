@@ -41,9 +41,14 @@ class MessengerController private constructor(private val context: Context) {
     private val store = MessageStore(context)
     private val preferences = context.getSharedPreferences("messenger_settings", 0)
     private var analysisUnavailable = false
+    @Volatile private var visibleThread: String? = null
     private val refreshQueued = AtomicBoolean(false)
     private val executor =
         ThreadPoolExecutor(1, 1, 0, TimeUnit.MILLISECONDS, ArrayBlockingQueue(64))
+    private val analysisExecutor =
+        ThreadPoolExecutor(1, 1, 0, TimeUnit.MILLISECONDS, ArrayBlockingQueue(64))
+    private val deliveryExecutor =
+        ThreadPoolExecutor(1, 1, 0, TimeUnit.MILLISECONDS, ArrayBlockingQueue(64), ThreadPoolExecutor.CallerRunsPolicy())
     private val mutableState =
         MutableStateFlow(
             MessengerState(
@@ -74,6 +79,8 @@ class MessengerController private constructor(private val context: Context) {
             if (isDefault) "default"
             else preferences.getString("mode", "unselected") ?: "unselected"
         val senderFilters = store.senderFilters()
+        val canRead = if (isDefault) store.hasReadAccess() else mode == "observer" &&
+            context.checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED
         mutableState.update {
             it.copy(
                 conversations = conversations,
@@ -81,20 +88,32 @@ class MessengerController private constructor(private val context: Context) {
                 isDefault = isDefault,
                 mode = mode,
                 senderFilters = senderFilters,
-                error = analysisError ?: it.error,
+                error =
+                    analysisError ?: it.error?.takeUnless { error ->
+                        error == "permission_missing" && canRead
+                    },
             )
         }
     }
 
     fun refresh() {
+        val isDefault = store.isDefault()
+        mutableState.update {
+            it.copy(
+                isDefault = isDefault,
+                mode = if (isDefault) "default" else preferences.getString("mode", "unselected") ?: "unselected",
+            )
+        }
         if (!refreshQueued.compareAndSet(false, true)) return
         execute(
             {
                 refreshQueued.set(false)
                 val conversations = analyzedConversations()
+                if (!analysisUnavailable) mutableState.update { if (it.error == "model_unavailable") it.copy(error = null) else it }
                 publish(conversations, if (analysisUnavailable) "model_unavailable" else null)
             },
             { refreshQueued.set(false) },
+            taskExecutor = analysisExecutor,
         )
     }
 
@@ -106,6 +125,7 @@ class MessengerController private constructor(private val context: Context) {
     private fun analyzedConversations(): List<Conversation> {
         analysisUnavailable = false
         val conversations = store.conversations()
+        publish(conversations)
         val pending =
             conversations
                 .flatMap { it.messages }
@@ -118,7 +138,7 @@ class MessengerController private constructor(private val context: Context) {
                 .take(32)
         var saved = 0
         pending.forEach { message ->
-            val risk = AppRuntime.get(context).assessMessage(message.body)
+            val risk = assessIncoming(message.address, message.body)
             if (risk == null) analysisUnavailable = true
             else {
                 store.classify(
@@ -135,6 +155,15 @@ class MessengerController private constructor(private val context: Context) {
         return if (saved > 0) store.conversations() else conversations
     }
 
+    private fun assessIncoming(address: String, original: String): MessageRisk? =
+        AppRuntime.get(context).assessMessage(original)?.let { risk ->
+            if (CommunityClient.get(context).cachedReporters(address) < 3) risk
+            else risk.copy(
+                decision = if (risk.decision == "spam") "spam" else "review",
+                reasons = (risk.reasons + "community_reported").distinct(),
+            )
+        }
+
     fun report(message: MessageItem, category: String, onComplete: () -> Unit) {
         CommunityClient.get(context).report(message.address, category, onComplete)
     }
@@ -147,12 +176,13 @@ class MessengerController private constructor(private val context: Context) {
 
     fun selectMode(mode: String) {
         require(mode in setOf("observer", "default"))
+        val monitoring = mode == "default" || context.checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED
         preferences
             .edit()
             .putString("mode", mode)
-            .putBoolean("monitoring", mode == "default")
+            .putBoolean("monitoring", monitoring)
             .apply()
-        mutableState.update { current -> current.copy(mode = mode, monitoring = mode == "default") }
+        mutableState.update { current -> current.copy(mode = mode, monitoring = monitoring) }
         refresh()
     }
 
@@ -193,37 +223,40 @@ class MessengerController private constructor(private val context: Context) {
                                 ?.lastPathSegment
                                 ?.let { "sms:$it" } ?: error("storage_error")
                         } else store.storeObserved(address, original, date)
-                    val result = AppRuntime.get(context).assessMessage(original)
-                    if (result != null)
-                        store.classify(
-                            id,
-                            result.prediction.label,
-                            result.version,
-                            result.decision,
-                            result.reasons,
+                    execute {
+                        val result = assessIncoming(address, original)
+                        if (result != null)
+                            store.classify(
+                                id,
+                                result.prediction.label,
+                                result.version,
+                                result.decision,
+                                result.reasons,
+                            )
+                        val conversations = store.conversations()
+                        val conversation = conversations.firstOrNull { it.key == store.key(address) }
+                        publish(
+                            conversations,
+                            if (result == null && inputStatus(original) == null) "model_unavailable"
+                            else null,
                         )
-                    val conversations = store.conversations()
-                    val conversation = conversations.firstOrNull { it.key == store.key(address) }
-                    publish(
-                        conversations,
-                        if (result == null && inputStatus(original) == null) "model_unavailable"
-                        else null,
-                    )
-                    if (
-                        conversation?.blocked != true &&
-                            (defaultDelivery || result?.decision in setOf("spam", "review"))
-                    )
-                        notifyMessage(
-                            conversation?.key ?: store.key(address),
-                            if (conversation?.spam == true) "spam"
-                            else if (result?.decision in setOf("spam", "review")) "review"
-                            else "normal",
+                        if (
+                            conversation?.blocked != true &&
+                                (defaultDelivery || result?.decision in setOf("spam", "review"))
                         )
+                            notifyMessage(
+                                conversation?.key ?: store.key(address),
+                                if (conversation?.spam == true) "spam"
+                                else if (result?.decision in setOf("spam", "review")) "review"
+                                else "normal",
+                            )
+                    }
                 } finally {
                     finishOnce()
                 }
             },
             finishOnce,
+            taskExecutor = deliveryExecutor,
         )
     }
 
@@ -237,6 +270,10 @@ class MessengerController private constructor(private val context: Context) {
         Handler(Looper.getMainLooper()).post { onComplete() }
     }
 
+    fun setVisibleThread(key: String?) {
+        visibleThread = key
+    }
+
     fun open(conversation: Conversation) = setRead(conversation, true)
 
     fun flag(
@@ -245,7 +282,7 @@ class MessengerController private constructor(private val context: Context) {
         value: Boolean,
         onComplete: () -> Unit = {},
     ) = execute {
-        store.flag(conversation.key, field, value, conversation.address)
+        store.flag(conversation.key, if (field == "spam" && value) "blocked" else field, value, conversation.address)
         publish()
         if (value && field in setOf("blocked", "spam"))
             context
@@ -327,12 +364,20 @@ class MessengerController private constructor(private val context: Context) {
 
     private fun execute(work: () -> Unit) = execute(work, {})
 
-    private fun execute(work: () -> Unit, onFailure: () -> Unit) =
-        execute("operation_failed", work, onFailure)
+    private fun execute(
+        work: () -> Unit,
+        onFailure: () -> Unit,
+        taskExecutor: ThreadPoolExecutor = executor,
+    ) = execute("operation_failed", work, onFailure, taskExecutor)
 
-    private fun execute(errorCode: String, work: () -> Unit, onFailure: () -> Unit = {}) {
+    private fun execute(
+        errorCode: String,
+        work: () -> Unit,
+        onFailure: () -> Unit = {},
+        taskExecutor: ThreadPoolExecutor = executor,
+    ) {
         try {
-            executor.execute {
+            taskExecutor.execute {
                 try {
                     work()
                 } catch (failure: Exception) {
@@ -360,6 +405,7 @@ class MessengerController private constructor(private val context: Context) {
     }
 
     private fun notifyMessage(thread: String, decision: String) {
+        if (visibleThread == thread) return
         if (
             Build.VERSION.SDK_INT >= 33 &&
                 context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) !=

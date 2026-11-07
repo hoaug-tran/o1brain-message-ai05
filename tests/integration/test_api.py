@@ -36,7 +36,7 @@ def test_real_prediction_compare_and_demo(client: TestClient) -> None:
     assert client.get("/figures/confusion_matrices.png").status_code == 200
     assert client.get("/api/v1/demo/metrics").json()["reports"]["english_baseline"][
         "confusion"
-    ] == {"tn": 904, "fp": 0, "fn": 31, "tp": 97}
+    ] == {"tn": 352, "fp": 1, "fn": 13, "tp": 201}
 
 
 @pytest.mark.parametrize(
@@ -105,11 +105,8 @@ def test_research_report_is_public_but_only_allowlisted_assets(
     assert "tập huấn luyện" in response.text
     assert "<style>" not in response.text
     assert client.get("/research/style.css").status_code == 200
-    assert len(client.get("/api/v1/demo/metrics").json()["research_reports"]) == 6
+    assert len(client.get("/api/v1/demo/metrics").json()["research_reports"]) == 2
     assert client.get("/research/figures/09_confusion.svg").status_code == 200
-    for label in ("ham", "spam"):
-        cloud = client.get(f"/research/figures/06_{label}_wordcloud.png")
-        assert cloud.status_code == 200 and cloud.headers["content-type"] == "image/png"
     assert (
         client.get("/research/figures/01_classes.png").headers["content-type"]
         == "image/png"

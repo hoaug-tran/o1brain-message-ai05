@@ -10,7 +10,7 @@
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
     <application android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher" android:theme="@style/Theme.O1Brain.Loc" android:label="@string/app_name" android:allowBackup="false" android:usesCleartextTraffic="false" android:supportsRtl="true">
         <service android:name=".CommunitySyncService" android:permission="android.permission.BIND_JOB_SERVICE" android:exported="false" />
-        <activity android:name=".MainActivity" android:launchMode="singleTop" android:exported="true">
+        <activity android:name=".MainActivity" android:windowSoftInputMode="adjustResize" android:launchMode="singleTop" android:exported="true">
             <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SENDTO" /><category android:name="android.intent.category.DEFAULT" /><category android:name="android.intent.category.BROWSABLE" />

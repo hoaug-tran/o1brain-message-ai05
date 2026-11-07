@@ -2,7 +2,7 @@
   "cases": [
     {
       "actual_label": "ham",
-      "actual_margin": -1.322012572141674,
+      "actual_margin": -1.2059210409446122,
       "category": "personal",
       "expected_label": "ham",
       "id": "user_01",
@@ -12,7 +12,7 @@
     },
     {
       "actual_label": "ham",
-      "actual_margin": -0.5783377144436208,
+      "actual_margin": -0.831757207261046,
       "category": "otp",
       "expected_label": "ham",
       "id": "user_02",
@@ -22,7 +22,7 @@
     },
     {
       "actual_label": "ham",
-      "actual_margin": -1.190329019206807,
+      "actual_margin": -1.1036526404566025,
       "category": "personal",
       "expected_label": "ham",
       "id": "user_03",
@@ -31,8 +31,8 @@
       "text": "Hi John, I left my notebook in your car. Can you bring it tomorrow?"
     },
     {
-      "actual_label": "ham",
-      "actual_margin": -0.28385177011294327,
+      "actual_label": "spam",
+      "actual_margin": 0.026161617091053357,
       "category": "delivery",
       "expected_label": "ham",
       "id": "user_04",
@@ -42,7 +42,7 @@
     },
     {
       "actual_label": "ham",
-      "actual_margin": -0.8243714517125631,
+      "actual_margin": -0.4087441797773082,
       "category": "personal",
       "expected_label": "ham",
       "id": "user_05",
@@ -51,8 +51,8 @@
       "text": "Reminder: Your appointment is scheduled for Monday at 10:30 AM."
     },
     {
-      "actual_label": "ham",
-      "actual_margin": -0.46182414786880016,
+      "actual_label": "spam",
+      "actual_margin": 0.5708258459933494,
       "category": "promotion",
       "expected_label": "spam",
       "id": "user_06",
@@ -62,7 +62,7 @@
     },
     {
       "actual_label": "spam",
-      "actual_margin": 0.24018267425852313,
+      "actual_margin": 0.7155148977952123,
       "category": "promotion",
       "expected_label": "spam",
       "id": "user_07",
@@ -72,7 +72,7 @@
     },
     {
       "actual_label": "spam",
-      "actual_margin": 0.3244947223449357,
+      "actual_margin": 0.2541580060767813,
       "category": "promotion",
       "expected_label": "spam",
       "id": "user_08",
@@ -81,8 +81,8 @@
       "text": "Join our VIP club today and receive a $20 discount on your next purchase."
     },
     {
-      "actual_label": "ham",
-      "actual_margin": -0.4555421294745426,
+      "actual_label": "spam",
+      "actual_margin": 0.3671043494194933,
       "category": "promotion",
       "expected_label": "spam",
       "id": "user_09",
@@ -92,7 +92,7 @@
     },
     {
       "actual_label": "spam",
-      "actual_margin": 1.3022525715257913,
+      "actual_margin": 1.5090510968848299,
       "category": "prize",
       "expected_label": "spam",
       "id": "user_10",
@@ -101,8 +101,8 @@
       "text": "CONGRATULATIONS! You've won a FREE iPhone! Reply WIN now to claim your prize."
     },
     {
-      "actual_label": "ham",
-      "actual_margin": -0.30579763076666355,
+      "actual_label": "spam",
+      "actual_margin": 0.501439142801087,
       "category": "delivery",
       "expected_label": "spam",
       "id": "user_11",
@@ -111,8 +111,8 @@
       "text": "Your parcel delivery failed due to an unpaid fee of $2.99. Update your payment details at https://parcel-check.example."
     },
     {
-      "actual_label": "ham",
-      "actual_margin": -0.20098873049991806,
+      "actual_label": "spam",
+      "actual_margin": 0.033657630940167826,
       "category": "account",
       "expected_label": "spam",
       "id": "user_12",
@@ -121,8 +121,8 @@
       "text": "Your student account will be disabled within 24 hours unless you verify your information at https://campus-login.example."
     },
     {
-      "actual_label": "ham",
-      "actual_margin": -0.33760047693122897,
+      "actual_label": "spam",
+      "actual_margin": 0.23228941132628456,
       "category": "otp",
       "expected_label": "spam",
       "id": "user_13",
@@ -132,7 +132,7 @@
     },
     {
       "actual_label": "ham",
-      "actual_margin": -0.5570763130238964,
+      "actual_margin": -0.6864091177082601,
       "category": "impersonation",
       "expected_label": "spam",
       "id": "user_14",
@@ -142,7 +142,7 @@
     },
     {
       "actual_label": "ham",
-      "actual_margin": -0.21584439701385394,
+      "actual_margin": -0.0385971673755896,
       "category": "account",
       "expected_label": "spam",
       "id": "user_15",
@@ -153,16 +153,16 @@
   ],
   "evaluation": {
     "confusion": {
-      "fn": 7,
-      "fp": 0,
-      "tn": 5,
-      "tp": 3
+      "fn": 2,
+      "fp": 1,
+      "tn": 4,
+      "tp": 8
     },
     "metrics": {
-      "ham_fpr": 0.0,
-      "spam_f1": 0.46153846153846156,
-      "spam_precision": 1.0,
-      "spam_recall": 0.3
+      "ham_fpr": 0.2,
+      "spam_f1": 0.8421052631578947,
+      "spam_precision": 0.8888888888888888,
+      "spam_recall": 0.8
     },
     "positive_label": "spam",
     "support": {
@@ -171,6 +171,6 @@
     },
     "undefined_policy": "null means zero denominator; confusion and support retained"
   },
-  "model_version": "uci_cv_balanced_20261107",
-  "scope": "Diagnostic only; never training or model selection"
+  "model_version": "bilingual-20261107-v2",
+  "scope": "Known synthetic diagnostic parity only; not training or selection"
 }

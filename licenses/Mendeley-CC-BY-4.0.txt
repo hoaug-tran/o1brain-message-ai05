@@ -1,0 +1,8 @@
+SMS PHISHING DATASET FOR MACHINE LEARNING AND PATTERN RECOGNITION
+Sandhya Mishra; Devpriya Soni (2022), Mendeley Data, V1.
+DOI: 10.17632/f45bkkt8pr.1
+https://data.mendeley.com/datasets/f45bkkt8pr/1
+License: Creative Commons Attribution 4.0 International.
+https://creativecommons.org/licenses/by/4.0/
+Original source retrieved via PhishNet_Dataset1_original.csv; source hash pinned in data/external/mendeley/SOURCE.json.
+Processing: label mapping spam/smishing to spam, invalid-input removal, deduplication, near-duplicate filtering, grouped partitioning.

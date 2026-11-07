@@ -23,19 +23,16 @@ def main() -> None:
             "/research/",
             "/research/style.css",
             "/research/figures/01_classes.png",
-            "/research/figures/06_ham_wordcloud.png",
-            "/research/figures/06_spam_wordcloud.png",
-            "/research/figures/08_models.png",
             "/research/figures/09_confusion.svg",
         ):
             response = client.get(path)
             response.raise_for_status()
             print(path, response.status_code)
         reports = client.get("/api/v1/demo/metrics").json()["research_reports"]
-        assert len(reports) == 6
+        assert set(reports) == {"english_baseline", "english_char_svm"}
         for report in reports.values():
             c = report["confusion"]
-            assert report["support"] == {"ham": 904, "spam": 128}
+            assert report["support"] == {"ham": 353, "spam": 214}
             assert report["metrics"]["ham_fpr"] == c["fp"] / (c["fp"] + c["tn"])
         for path in ("/research/figures/phone.key", "/research/split.json"):
             assert client.get(path).status_code == 404

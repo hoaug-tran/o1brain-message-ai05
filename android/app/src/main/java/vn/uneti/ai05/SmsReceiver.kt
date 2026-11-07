@@ -10,7 +10,7 @@ class SmsReceiver : BroadcastReceiver() {
         val defaultDelivery = intent.action == Telephony.Sms.Intents.SMS_DELIVER_ACTION
         if (!defaultDelivery && intent.action != Telephony.Sms.Intents.SMS_RECEIVED_ACTION) return
         val controller = MessengerController.get(context)
-        val isDefault = Telephony.Sms.getDefaultSmsPackage(context) == context.packageName
+        val isDefault = SmsOperations.isDefault(context)
         if (
             defaultDelivery && !isDefault ||
                 !defaultDelivery && (isDefault || !controller.observes())

@@ -14,6 +14,12 @@ import android.telephony.SubscriptionManager
 import java.util.UUID
 
 object SmsOperations {
+    fun isDefault(context: Context): Boolean =
+        if (android.os.Build.VERSION.SDK_INT >= 29)
+            context.getSystemService(android.app.role.RoleManager::class.java)
+                .isRoleHeld(android.app.role.RoleManager.ROLE_SMS)
+        else Telephony.Sms.getDefaultSmsPackage(context) == context.packageName
+
     @Suppress("DEPRECATION")
     fun manager(context: Context, subscription: Int): SmsManager =
         if (subscription >= 0) SmsManager.getSmsManagerForSubscriptionId(subscription)
@@ -25,7 +31,7 @@ object SmsOperations {
         original: String,
         subscription: Int = SubscriptionManager.getDefaultSmsSubscriptionId(),
     ): Uri {
-        require(Telephony.Sms.getDefaultSmsPackage(context) == context.packageName) {
+        require(SmsOperations.isDefault(context)) {
             "default_required"
         }
         require(validRecipient(address)) { "invalid_recipient" }
@@ -86,6 +92,7 @@ object SmsOperations {
         return uri
     }
 
+    @Synchronized
     fun receive(
         context: Context,
         address: String,
@@ -93,7 +100,7 @@ object SmsOperations {
         date: Long,
         subscription: Int,
     ): Uri? {
-        require(Telephony.Sms.getDefaultSmsPackage(context) == context.packageName)
+        require(SmsOperations.isDefault(context))
         context.contentResolver
             .query(
                 Telephony.Sms.Inbox.CONTENT_URI,
@@ -131,7 +138,7 @@ class SmsStatusReceiver : BroadcastReceiver() {
         val uri = intent.getStringExtra("sms_uri")?.let { Uri.parse(it) } ?: return
         if (
             uri.authority != "sms" ||
-                Telephony.Sms.getDefaultSmsPackage(context) != context.packageName
+                !SmsOperations.isDefault(context)
         )
             return
         val count = intent.getIntExtra("part_count", 0)
@@ -185,7 +192,7 @@ class RespondViaMessageService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (
             intent?.action == "android.intent.action.RESPOND_VIA_MESSAGE" &&
-                Telephony.Sms.getDefaultSmsPackage(this) == packageName
+                SmsOperations.isDefault(this)
         ) {
             val address = intent.data?.schemeSpecificPart?.substringBefore('?')
             val text = intent.getStringExtra(Intent.EXTRA_TEXT)

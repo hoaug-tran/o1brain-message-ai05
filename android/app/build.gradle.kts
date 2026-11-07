@@ -11,9 +11,10 @@ android {
     defaultConfig {
         applicationId = "vn.uneti.ai05"
         buildConfigField("String", "COMMUNITY_URL", "\"https://community.trkhoang.dev\"")
+        buildConfigField("String", "EXTERNAL_EVIDENCE_SHA256", "\"${file("src/main/external_evidence.sha256").readText().trim()}\"")
         minSdk = 26
         targetSdk = 35
-        versionCode = 4
+        versionCode = 13
         versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField(

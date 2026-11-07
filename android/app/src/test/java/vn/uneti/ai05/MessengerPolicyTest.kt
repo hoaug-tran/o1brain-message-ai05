@@ -78,4 +78,19 @@ class MessengerPolicyTest {
         )
         assertEquals(0, MessengerState().unreadSpamCount)
     }
+    @Test
+    fun recentRecipientsExcludeSpamSuspicionsAndInvalidNumbers() {
+        fun row(number: String, decision: String, spam: Boolean = false) = conversation(number, spam = spam).let {
+            it.copy(messages = listOf(it.latest.copy(riskDecision = decision)))
+        }
+        val normal = row("+12025550141", "normal")
+        val spam = row("+12025550142", "spam", true)
+        val review = row("+12025550143", "review")
+        val blocked = row("+12025550144", "normal").copy(blocked = true)
+        val brand = row("BrandName", "normal")
+        assertEquals(listOf(normal), recentRecipients(listOf(normal, spam, review, blocked, brand), ""))
+        assertTrue(recentRecipients(listOf(normal), "999").isEmpty())
+        assertEquals(listOf(normal), recentRecipients(listOf(normal, normal), "0141"))
+    }
+
 }

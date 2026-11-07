@@ -16,6 +16,14 @@ def main() -> None:
         default=Path("android/app/src/main/assets/english_char_svm.json"),
     )
     args = parser.parse_args()
+    mobile = Path("artifacts/mobile.json")
+    if mobile.exists():
+        from ml.mobile import export
+
+        if args.output != Path("android/app/src/main/assets/english_char_svm.json"):
+            raise ValueError("Mobile export uses its verified standard asset path")
+        export(Path.cwd(), Path(json.loads(mobile.read_text())["run"]).resolve())
+        return
     registry = ModelRegistry(Path("artifacts/registry.json"))
     if not registry.ready or registry.active != "english_char_svm":
         raise ValueError("Verified selected char SVM required")
@@ -52,7 +60,7 @@ def main() -> None:
         "weights": classifier.coef_[0].tolist(),
         "intercept": float(classifier.intercept_[0]),
     }
-    write_json(args.output, export)
+    write_json(args.output, export, immutable=True)
 
     fixtures = [
         "Hello friend, see you tomorrow.",
@@ -85,23 +93,8 @@ def main() -> None:
             "model_version": export["model_version"],
             "fixtures": cases,
         },
+        immutable=True,
     )
-    write_json(
-        Path("android/app/src/androidTest/assets/parity.json"),
-        {
-            "tolerance": 1e-9,
-            "model_version": export["model_version"],
-            "fixtures": cases,
-        },
-    )
-    for name in ("user-diagnostic-parity.json", "ten-sms-parity.json"):
-        path = Path("android/app/src/androidTest/assets") / name
-        diagnostics = json.loads(path.read_text(encoding="utf-8"))
-        for case in diagnostics["cases"]:
-            case["actual_margin"] = float(model.decision_function([case["text"]])[0])
-            case["actual_label"] = str(model.predict([case["text"]])[0])
-        diagnostics["model_version"] = export["model_version"]
-        write_json(path, diagnostics)
     args.output.parent.parent.joinpath("model.sha256").write_text(
         sha256(args.output) + "\n"
     )

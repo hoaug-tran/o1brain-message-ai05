@@ -208,7 +208,7 @@ def create_app(
                 if compare:
                     return {
                         "input_id": str(uuid4()),
-                        "dataset_scope": "competition_english",
+                        "dataset_scope": "expanded_english_experiment",
                         "comparisons": [
                             predict(
                                 registry,
@@ -329,7 +329,7 @@ def create_app(
             result["research_reports"] = {
                 name: {
                     **value,
-                    "evaluation_scope": "reused_development_validation_uci_only",
+                    "evaluation_scope": "expanded_grouped_development_holdout",
                 }
                 for name, value in report["reports"].items()
             }

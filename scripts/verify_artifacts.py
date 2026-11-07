@@ -4,50 +4,63 @@ from pathlib import Path
 
 from ai05.infrastructure.models import ModelRegistry
 from ml.common import sha256
-from ml.datasets import load_btc, split_btc
+from ml.datasets import load_btc, normalize, split_btc
+from ml.expanded import clean_extra, read_sources
+from ml.metrics import evaluate
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="Verify registry hashes and predictions against recorded development IDs."
-    )
-    parser.add_argument(
-        "--registry", type=Path, default=Path("artifacts/registry.json")
-    )
-    parser.add_argument("--data", type=Path, default=Path("data/raw/SMSSpamCollection"))
-    args = parser.parse_args()
-    registry = ModelRegistry(args.registry)
-    if not registry.ready:
-        raise SystemExit("Artifact verification failed: registry unavailable")
-    if args.data.exists():
-        if any(
-            sha256(args.data) != metadata["dataset_sha256"]
-            for metadata in registry.metadata.values()
-        ):
-            raise SystemExit("Dataset source hash differs from training evidence")
-        frame, _ = load_btc(args.data)
+def verify(root: Path, registry_path: Path) -> None:
+    registry = ModelRegistry(registry_path)
+    if not registry.ready or set(registry.models) != {
+        "english_baseline",
+        "english_char_svm",
+    }:
+        raise ValueError("Exactly two verified expanded models required")
+    run = root / Path(json.loads(registry_path.read_text())["comparison"]).parent
+    report = json.loads((run / "report.json").read_text())
+    for part, predictions in report["predictions"].items():
+        for name, values in predictions.items():
+            if (
+                evaluate(report["truth"][part], values)
+                != report["evaluations"][part][name]
+            ):
+                raise ValueError("Recorded predictions and metrics disagree")
+    if any(
+        metadata["dataset_sha256"] != sha256(run / "plan.json")
+        for metadata in registry.metadata.values()
+    ):
+        raise ValueError("Training plan hash differs")
+    if (root / "data/external/india/spam_ham_india.csv").is_file():
+        frame, _ = load_btc(root / "data/raw/SMSSpamCollection")
         _, validation = split_btc(frame)
-        result_dir = Path("results/experiments") / registry.comparison["run_id"]
-        for model_id, model in registry.models.items():
-            recorded = json.loads(
-                (result_dir / f"{model_id}_predictions.json").read_text()
-            )
-            if list(validation.source_id) != [
-                item["source_id"] for item in recorded["rows"]
-            ]:
-                raise SystemExit("Validation identities differ")
-            if list(model.predict(validation.text)) != [
-                item["prediction"] for item in recorded["rows"]
-            ]:
-                raise SystemExit("Predictions differ")
-        print(
-            f"{len(registry.models)} models: checksums and validation predictions verified"
-        )
+        rows, _ = read_sources(root)
+        extra, _ = clean_extra(rows, set(map(normalize, frame.text)))
+        external = extra.set_index("id").loc[report["plan"]["external_holdout_ids"]]
+        for part, data in (
+            ("external_holdout", external),
+            ("uci_validation", validation),
+        ):
+            if data.label.tolist() != report["truth"][part]:
+                raise ValueError("Holdout identities or labels differ")
+            for name, model in registry.models.items():
+                if (
+                    model.predict(data.text).tolist()
+                    != report["predictions"][part][name]
+                ):
+                    raise ValueError("Actual holdout predictions differ")
+        print("2 models: checksums and validation predictions verified")
     else:
         print(
-            f"{len(registry.models)} model checksums verified; validation replay skipped: data missing"
+            "2 model checksums verified; recorded metrics verified; raw-source replay skipped: data missing"
         )
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(
+        description="Verify the two expanded demo artifacts and held-out predictions"
+    )
+    parser.add_argument(
+        "--registry", type=Path, default=Path("artifacts/registry.json")
+    )
+    args = parser.parse_args()
+    verify(Path.cwd(), args.registry)

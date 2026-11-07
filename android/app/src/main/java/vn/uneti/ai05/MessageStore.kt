@@ -171,7 +171,7 @@ class MessageStore(private val context: Context) :
         }
     }
 
-    fun isDefault(): Boolean = Telephony.Sms.getDefaultSmsPackage(context) == context.packageName
+    fun isDefault(): Boolean = SmsOperations.isDefault(context)
 
     fun hasReadAccess(): Boolean =
         isDefault() &&
@@ -249,19 +249,26 @@ class MessageStore(private val context: Context) :
                     "received",
                 )
         }
+        val observed = messages.associateBy { Triple(it.address, it.body, it.date) }
+        val duplicatePreviews = HashSet<String>()
         if (hasReadAccess()) {
             context.contentResolver
                 .query(
                     Telephony.Sms.CONTENT_URI,
-                    arrayOf("_id", "address", "body", "date", "type", "read", "sub_id"),
+                    arrayOf("_id", "address", "body", "date", "type", "read", "sub_id", "date_sent"),
                     null,
                     null,
                     "date DESC",
                 )
                 ?.use { cursor ->
-                    while (messages.size < MAX_SYSTEM_SMS && cursor.moveToNext()) {
+                    var count = 0
+                    while (count < MAX_SYSTEM_SMS && cursor.moveToNext()) {
                         val type = cursor.getInt(4)
                         if (type == Telephony.Sms.MESSAGE_TYPE_DRAFT) continue
+                        count++
+                        observed[Triple(cursor.getString(1) ?: "", cursor.getString(2) ?: "", cursor.getLong(7))]?.let {
+                            duplicatePreviews += it.id
+                        }
                         messages +=
                             MessageItem(
                                 "sms:" + cursor.getLong(0),
@@ -350,6 +357,7 @@ class MessageStore(private val context: Context) :
                     }
                 }
         }
+        messages.removeAll { it.id in duplicatePreviews }
         val flags = mutableMapOf<String, ThreadFlags>()
         readableDatabase
             .query(
@@ -386,8 +394,9 @@ class MessageStore(private val context: Context) :
                     (1..4).map { cursor.getString(it) }
             }
 
+        val threadKeys = HashMap<String, String>()
         return messages
-            .groupBy { key(it.address) }
+            .groupBy { threadKeys.getOrPut(it.address) { key(it.address) } }
             .map { (thread, items) ->
                 val sorted =
                     items
@@ -410,11 +419,9 @@ class MessageStore(private val context: Context) :
                         .getSharedPreferences("messenger_settings", 0)
                         .getBoolean("auto_spam", true) &&
                         !flag.trusted &&
-                        sorted.any {
-                            !it.outgoing &&
-                                !assessmentNeedsRefresh(it.modelVersion) &&
-                                it.riskDecision == "spam"
-                        }
+                        sorted.lastOrNull { !it.outgoing }?.let {
+                            !assessmentNeedsRefresh(it.modelVersion) && it.riskDecision == "spam"
+                        } == true
                 Conversation(
                     thread,
                     sorted.last().address,
@@ -472,6 +479,7 @@ class MessageStore(private val context: Context) :
                         putNull("sender_address")
                     }
                     if (field == "spam" && !value) {
+                        put("archived", 0)
                         put("blocked", 0)
                         putNull("sender_address")
                     }

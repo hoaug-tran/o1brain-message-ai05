@@ -33,6 +33,16 @@ import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 
+internal val PriorityOutlineIcon = ImageVector.Builder("PriorityOutline", 24.dp, 24.dp, 24f, 24f).apply {
+    path(fill = null, stroke = SolidColor(Color.Black), strokeLineWidth = 1.7f,
+        strokeLineJoin = androidx.compose.ui.graphics.StrokeJoin.Round) {
+        moveTo(12f, 3f); lineTo(14.8f, 8.8f); lineTo(21.2f, 9.7f)
+        lineTo(16.6f, 14.2f); lineTo(17.7f, 20.5f); lineTo(12f, 17.5f)
+        lineTo(6.3f, 20.5f); lineTo(7.4f, 14.2f); lineTo(2.8f, 9.7f)
+        lineTo(9.2f, 8.8f); close()
+    }
+}.build()
+
 private val CheckShieldIcon =
     ImageVector.Builder("CheckShield", 24.dp, 24.dp, 24f, 24f)
         .apply {
@@ -90,6 +100,13 @@ private val SpamMessageIcon =
             }
         }
         .build()
+
+internal fun recentRecipients(conversations: List<Conversation>, address: String): List<Conversation> =
+    conversations.filter {
+        !it.spam && !it.blocked && validRecipient(it.address) &&
+            (it.trusted || it.spamOverride == false || it.latest.outgoing || it.latest.riskDecision == "normal") &&
+            (address.isBlank() || it.address.contains(address, ignoreCase = true))
+    }.distinctBy { it.address }.take(8)
 
 internal fun visibleConversations(
     conversations: List<Conversation>,
@@ -190,6 +207,8 @@ internal fun InboxScreen(
                     Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
+                    if (state.error == "model_unavailable")
+                        Text(stringResource(R.string.model_unavailable), color = MaterialTheme.colorScheme.error)
                     if (
                         state.mode == "unselected" ||
                             state.mode == "default" && !state.isDefault ||
@@ -578,13 +597,8 @@ internal fun SettingsScreen(
                             style = MaterialTheme.typography.titleLarge,
                         )
                     }
-                    item {
-                        Text(
-                            stringResource(
-                                if (detail == "privacy") R.string.privacy_messenger
-                                else R.string.model_scope_short
-                            )
-                        )
+                    if (detail == "privacy") {
+                        item { Text(stringResource(R.string.privacy_messenger)) }
                     }
                     if (detail == "model") {
                         item { Text(stringResource(R.string.model_limits)) }
@@ -657,7 +671,6 @@ internal fun SettingsScreen(
                     )
                 }
             }
-            item { CommunitySettings() }
             item {
                 SettingsRow(
                     Icons.Default.Person,

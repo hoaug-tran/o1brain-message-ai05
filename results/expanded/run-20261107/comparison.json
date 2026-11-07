@@ -1,0 +1,49 @@
+{
+  "dataset_id": "uci_mendeley_india_english",
+  "reports": {
+    "english_baseline": {
+      "confusion": {
+        "fn": 13,
+        "fp": 1,
+        "tn": 352,
+        "tp": 201
+      },
+      "evaluation_scope": "source-held-out development evaluation; Mendeley and UCI previously inspected, not a blind final test",
+      "metrics": {
+        "ham_fpr": 0.0028328611898017,
+        "spam_f1": 0.9663461538461539,
+        "spam_precision": 0.995049504950495,
+        "spam_recall": 0.9392523364485982
+      },
+      "positive_label": "spam",
+      "support": {
+        "ham": 353,
+        "spam": 214
+      },
+      "undefined_policy": "null means zero denominator; confusion and support retained"
+    },
+    "english_char_svm": {
+      "confusion": {
+        "fn": 2,
+        "fp": 2,
+        "tn": 351,
+        "tp": 212
+      },
+      "evaluation_scope": "source-held-out development evaluation; Mendeley and UCI previously inspected, not a blind final test",
+      "metrics": {
+        "ham_fpr": 0.0056657223796034,
+        "spam_f1": 0.9906542056074766,
+        "spam_precision": 0.9906542056074766,
+        "spam_recall": 0.9906542056074766
+      },
+      "positive_label": "spam",
+      "support": {
+        "ham": 353,
+        "spam": 214
+      },
+      "undefined_policy": "null means zero denominator; confusion and support retained"
+    }
+  },
+  "run_id": "run-20261107",
+  "split_id": "external_grouped_holdout_seed2026"
+}

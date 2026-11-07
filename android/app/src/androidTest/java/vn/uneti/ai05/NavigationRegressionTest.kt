@@ -37,20 +37,14 @@ class NavigationRegressionTest {
             }
             compose.onNodeWithContentDescription(context.getString(R.string.back)).performClick()
             compose.onNodeWithTag("nav_spam").assertIsSelected()
-            val unread = controller.state.value.conversations.filter { it.spam }.sumOf { it.unread }
-            if (unread == 0)
-                compose
-                    .onNode(
-                        hasAnyAncestor(hasTestTag("nav_spam")) and
-                            hasText(
-                                controller.state.value.conversations.count { it.spam }.toString()
-                            )
-                    )
-                    .assertDoesNotExist()
-            else
-                compose
-                    .onNode(hasAnyAncestor(hasTestTag("nav_spam")) and hasText(unread.toString()))
-                    .assertIsDisplayed()
+            compose.waitUntil(10_000) {
+                val unread = controller.state.value.unreadSpamCount
+                if (unread == 0) compose.onAllNodesWithTag("spam_unread_badge", useUnmergedTree = true).fetchSemanticsNodes().isEmpty()
+                else compose.onAllNodes(hasAnyAncestor(hasTestTag("spam_unread_badge")) and hasText(unread.toString()), useUnmergedTree = true).fetchSemanticsNodes().any { it.boundsInWindow.width > 0 && it.boundsInWindow.height > 0 }
+            }
+            val unread = controller.state.value.unreadSpamCount
+            if (unread > 0) compose.onNodeWithTag("spam_unread_badge", useUnmergedTree = true).assertIsDisplayed()
+
         } finally {
             store.conversations().firstOrNull { it.address == sender }?.let { store.delete(it) }
             controller.refresh()

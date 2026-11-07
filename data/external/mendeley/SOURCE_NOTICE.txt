@@ -1,0 +1,68 @@
+#PhishNet Datasets
+
+This repository contains the datasets used in the paper:
+PhishNet: A Real-Time, Scalable Ensemble Framework for Smishing Attack Detection Using Transformers and LLMs.
+These datasets support research on SMS spam and smishing detection using machine learning, transformer-based models, and large language models (LLMs).
+ 
+##Repository Contents
+
+The repository includes the following files:
+
+•	PhishNet_Dataset1_original.csv
+
+•	PhishNet_Dataset2.csv
+
+Each dataset is described in detail below.
+ 
+##Dataset 1: SMS Phishing Dataset (Public)
+
+File: PhishNet_Dataset1_original.csv
+
+Dataset 1 is a publicly available SMS phishing dataset widely used for machine learning and pattern recognition research. It contains labeled SMS messages commonly categorized as ham, smishing, and spam and serves as a benchmark dataset for evaluating classification models.
+•	Source: Mendeley Data
+
+•	Title: SMS Phishing Dataset for Machine Learning and Pattern Recognition
+
+•	URL: https://data.mendeley.com/datasets/f45bkkt8pr/1
+
+This dataset was retrieved online and used without modification to ensure reproducibility and fair comparison with prior work.
+
+ 
+##Dataset 2: PhishNet Curated Smishing Dataset (Custom)
+File: PhishNet_Dataset2.csv
+
+Dataset 2 is a custom-curated dataset developed specifically for the PhishNet framework. It was constructed to address limitations in existing datasets, including class imbalance, evolving smishing patterns, and real-world message diversity.
+Key characteristics of Dataset 2 include:
+
+•	Carefully curated and labeled SMS messages
+
+•	Inclusion of ham, spam, and smishing classes
+
+•	Designed to reflect realistic and modern smishing attack scenarios
+
+•	Used to evaluate the effectiveness of transformer models and large language model ensembles in real-time detection settings
+This dataset is original to our research and is described in detail in the PhishNet paper.
+
+ 
+##Citation Requirement
+
+If you use Dataset 2 (PhishNet_Dataset2.csv) in your research, you must cite our paper:
+@Article{cmc.2025.069491,
+AUTHOR = {Abeer Alhuzali, Qamar Al-Qahtani, Asmaa Niyazi, Lama Alshehri, Fatemah Alharbi},
+TITLE = {PhishNet: A Real-Time, Scalable Ensemble Framework for Smishing Attack Detection Using Transformers and LLMs},
+JOURNAL = {Computers, Materials \& Continua},
+VOLUME = {86},
+YEAR = {2026},
+NUMBER = {1},
+PAGES = {1--19},
+URL = {http://www.techscience.com/cmc/v86n1/64468},
+ISSN = {1546-2226},
+ABSTRACT = {The surge in smishing attacks underscores the urgent need for robust, real-time detection systems powered by advanced deep learning models. This paper introduces PhishNet, a novel ensemble learning framework that integrates transformer-based models (RoBERTa) and large language models (LLMs) (GPT-OSS 120B, LLaMA3.3 70B, and Qwen3 32B) to enhance smishing detection performance significantly. To mitigate class imbalance, we apply synthetic data augmentation using T5 and leverage various text preprocessing techniques. Our system employs a dual-layer voting mechanism: weighted majority voting among LLMs and a final ensemble vote to classify messages as ham, spam, or smishing. Experimental results show an average accuracy improvement from 96% to 98.5% compared to the best standalone transformer, and from 93% to 98.5% when compared to LLMs across datasets. Furthermore, we present a real-time, user-friendly application to operationalize our detection model for practical use. PhishNet demonstrates superior scalability, usability, and detection accuracy, filling critical gaps in current smishing detection methodologies.},
+DOI = {10.32604/cmc.2025.069491}
+}
+ 
+##License and Usage
+
+•	Dataset 1 is subject to the original license specified by its authors.
+
+•	Dataset 2 is provided for research and academic use only. Proper citation is required.

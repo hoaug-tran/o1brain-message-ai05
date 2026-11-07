@@ -1,20 +1,20 @@
 {
   "active_model_id": "english_char_svm",
-  "comparison": "results/experiments/uci_cv_balanced_20261107/comparison.json",
-  "comparison_sha256": "71c3ddbb3cd61d129125056ef469d11ddb3cce5098f457a099d0d07bd9ba3c86",
+  "comparison": "results/expanded/run-20261107/comparison.json",
+  "comparison_sha256": "34af0ae7f21dfcfae35eb42afe0011e9c6861d31873152b8dc6de8ab4a83b65f",
   "models": {
     "english_baseline": {
-      "artifact": "english_baseline/en_7d039a24_6fe3229b_2026_7585946abe1e/model.joblib",
-      "artifact_sha256": "46302847c091a0ccb11c5ffc776bce5ecc0e295dd47bb32e9f82e593e606722e",
-      "metadata": "english_baseline/en_7d039a24_6fe3229b_2026_7585946abe1e/metadata.json",
-      "metadata_sha256": "33bf0629e5cc452ef22d2c6a53f3c49ac820602427bc33141d1dd03a9845ebaa"
+      "artifact": "english_baseline/run-20261107/model.joblib",
+      "artifact_sha256": "d99f834b0282326b4cb2eec1910f1d2fa537437a19d50c15f527b8808337f670",
+      "metadata": "english_baseline/run-20261107/metadata.json",
+      "metadata_sha256": "605d52737784762b1648707a9ce5fa8b27b172fe3d3daa913ca25e62453cb39b"
     },
     "english_char_svm": {
-      "artifact": "english_char_svm/uci_cv_balanced_20261107/model.joblib",
-      "artifact_sha256": "d0c7e31a2498f550b12d17edce3910f38d4b459f98c36c14858828ee06ceb37c",
-      "metadata": "english_char_svm/uci_cv_balanced_20261107/metadata.json",
-      "metadata_sha256": "2c0e8237082b0419ee06be77dfd85b5c0cbb1a4286e966c37bc968291bb35f35"
+      "artifact": "english_char_svm/run-20261107/model.joblib",
+      "artifact_sha256": "89e14d82fcec7f499eb6425a21bd19d06ce5c9a56685e2c24ffc6a9c549b6184",
+      "metadata": "english_char_svm/run-20261107/metadata.json",
+      "metadata_sha256": "b07d7e70681e24a1714696d885a8f6a3123860c2703305b1dae05c49c43c2df2"
     }
   },
-  "run_id": "uci_cv_balanced_20261107"
+  "run_id": "run-20261107"
 }

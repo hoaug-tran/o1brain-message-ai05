@@ -15,7 +15,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -23,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextRange
@@ -63,12 +63,7 @@ internal fun MessageAssessment(message: MessageItem) {
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     message.riskReasons.forEach { Text(stringResource(riskReason(it))) }
                     Text(stringResource(R.string.caution))
-                    message.modelVersion?.let {
-                        Text(
-                            stringResource(R.string.model_format, it),
-                            style = MaterialTheme.typography.bodySmall,
-                        )
-                    }
+
                 }
             },
             confirmButton = {
@@ -99,7 +94,8 @@ internal fun ConversationRow(
     ) {
         Surface(
             shape = CircleShape,
-            color = MaterialTheme.colorScheme.primaryContainer,
+            color = MaterialTheme.colorScheme.surfaceVariant,
+            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.size(44.dp),
         ) {
             Box(contentAlignment = Alignment.Center) {
@@ -118,6 +114,7 @@ internal fun ConversationRow(
             Text(
                 conversation.latest.body,
                 style = MaterialTheme.typography.bodyMedium,
+                fontWeight = if (conversation.unread > 0) FontWeight.SemiBold else FontWeight.Normal,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
@@ -141,7 +138,7 @@ internal fun ConversationRow(
             }
             if (
                 !conversation.spam &&
-                    conversation.messages.any { it.riskDecision in setOf("spam", "review") }
+                    conversation.messages.lastOrNull { !it.outgoing }?.riskDecision in setOf("spam", "review")
             )
                 Text(
                     stringResource(R.string.needs_review),
@@ -168,6 +165,10 @@ internal fun ChatScreen(
     onSpamChanged: (Boolean) -> Unit = {},
 ) {
     val context = LocalContext.current
+    val inbox by controller.state.collectAsState()
+    val recipients = remember(inbox.conversations, address) {
+        recentRecipients(inbox.conversations, address)
+    }
     val clipboard = LocalClipboardManager.current
     var editor by
         rememberSaveable(stateSaver = TextFieldValue.Saver) {
@@ -243,10 +244,24 @@ internal fun ChatScreen(
             )
         LazyColumn(
             Modifier.weight(1f).fillMaxWidth(),
-            reverseLayout = true,
+            reverseLayout = conversation != null,
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
+            if (conversation == null) {
+                item {
+                    Text(stringResource(if (recipients.isEmpty()) R.string.recipient_empty else R.string.recent_recipients),
+                        style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(vertical = 12.dp))
+                }
+                items(recipients, key = { it.key }) { recipient ->
+                    ListItem(
+                        headlineContent = { Text(recipient.address) },
+                        leadingContent = { Icon(Icons.Default.Person, null) },
+                        modifier = Modifier.clickable { onAddress(recipient.address) },
+                    )
+                }
+            }
             items(conversation?.messages?.reversed() ?: emptyList(), key = { it.id }) { message ->
                 Row(
                     Modifier.fillMaxWidth(),
@@ -403,7 +418,7 @@ internal fun ChatScreen(
                 }
             }
         Row(
-            Modifier.fillMaxWidth().padding(12.dp),
+            Modifier.fillMaxWidth().padding(12.dp).testTag("message_composer"),
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {

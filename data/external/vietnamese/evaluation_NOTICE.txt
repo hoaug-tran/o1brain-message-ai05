@@ -1,0 +1,61 @@
+---
+language:
+- vi
+license: cc-by-4.0
+size_categories:
+- n<1K
+task_categories:
+- text-classification
+tags:
+- vietnamese
+- sms-spam
+- phishing
+- cybersecurity
+- nlp
+pretty_name: Quality-Assured Vietnamese SMS Phishing Benchmark (300-Sample Evaluation Corpus)
+---
+
+# Quality-Assured Vietnamese SMS Phishing Dataset (Sample Evaluation Corpus)
+
+This repository provides an open-access 300-message evaluation sample of the **Quality-Assured Vietnamese SMS Phishing Dataset**, a leakage-controlled benchmark constructed using a closed-loop multi-annotator agreement framework and near-duplicate template deduplication (J ≥ 0.85).
+
+## Authors & Research Team
+
+- **Trần Nguyễn Thái Tuấn** (Lead Researcher & Project Lead)
+- **Lê Hoàng Khang** (Researcher)
+- **Nguyễn Minh Tài** (Researcher)
+- **Nguyễn Văn Thắng** (Researcher)
+- **Mai Hoàng Đỉnh** (Project Advisor / Mentor)
+
+## Dataset Summary
+
+- **Language:** Vietnamese (`vi`)
+- **Task:** Binary SMS Spam / Phishing Detection (`HAM` vs. `SPAM`)
+- **Sanitization:** 100% PII Anonymized (Phone numbers, bank accounts, names, and OTP tokens replaced with standardized tokens `[PHONE]`, `[BANK_ACC]`, `[MONEY]`, `[NUMBER]`, `[TIME]`)
+- **Quality Audit:** Manually audited on 200 random samples showing **0% residual PII leakage**.
+- **Licensing:** Creative Commons Attribution 4.0 International ([CC BY 4.0](https://creativecommons.org/licenses/by/4.0/))
+
+## Dataset Structure
+
+The dataset file `sample_300.csv` contains the following columns:
+
+| Column Name | Data Type | Description |
+| :--- | :--- | :--- |
+| `message_id` | String | Unique tracking identifier (e.g., `COM_001`, `COM_002`) |
+| `text` | String | Sanitized unaccented/accented Vietnamese SMS text |
+
+## Citation & Paper Reference
+
+If you use this dataset sample in your research, please cite our manuscript:
+
+```bibtex
+@article{tuan2026vietnamese_sms_phishing,
+  title={Quality-Assured Vietnamese SMS Phishing Dataset: Closed-Loop Human Adjudication Framework and Leakage-Controlled Transformer Benchmarking},
+  author={Tran, Nguyen Thai Tuan and Le, Hoang Khang and Nguyen, Minh Tai and Nguyen, Van Thang and Mai, Hoang Dinh},
+  journal={IEEE Access / Computer Science Domain},
+  year={2026}
+}
+```
+
+## Ethics Statement & Institutional Review
+Collection protocol was granted formal institutional ethics exemption (IRB Protocol Ref: `IRB-2026-NLP-0428`). All user-contributed messages were gathered under voluntary informed consent.

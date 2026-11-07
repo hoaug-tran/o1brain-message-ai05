@@ -11,11 +11,14 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class DeviceContractTest {
     @Test
-    fun apkContainsOnlyUciModelAndNoExternalWeights() {
+    fun apkContainsPinnedExpandedModel() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val assets = context.assets.list("")!!.toSet()
         assertTrue("english_char_svm.json" in assets)
         assertTrue(assets.none { it.startsWith("product_") })
+        val model = JSONObject(context.assets.open("english_char_svm.json").bufferedReader().use { it.readText() })
+        assertEquals("bilingual-20261107-v2", model.getString("model_version"))
+        assertEquals("[\"en\",\"vi\"]", model.getJSONArray("supported_languages").toString())
     }
 
     @Test
@@ -97,11 +100,13 @@ class DeviceContractTest {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val runtime = AppRuntime.get(context)
         val fixture = "Synthetic private-content marker test-privacy-938271"
-        val before = context.getSharedPreferences("metadata", 0).all.toMap()
+        val before = context.getSharedPreferences("metadata", 0).all
         assertNotNull(runtime.assessMessage(fixture))
-        val metadata = context.getSharedPreferences("metadata", 0).all
-        assertEquals(before, metadata)
-        assertFalse(metadata.toString().contains(fixture))
+        assertTrue("Quick check must not alter stored metadata", before == context.getSharedPreferences("metadata", 0).all)
+        val metadata = context.getSharedPreferences("metadata", 0).all.toString()
+        assertFalse(metadata.contains(fixture))
+        assertFalse(metadata.contains("938271"))
+        assertFalse(metadata.contains("sender"))
         assertEquals(null, inputStatus("English SMS with original URL https://example.invalid/"))
     }
 

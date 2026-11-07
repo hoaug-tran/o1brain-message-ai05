@@ -40,5 +40,6 @@ class CommunityFlowTest {
             idle()
         }
         assertTrue(client.state.value.reports.none { it.phone == phone })
+        assertEquals("Retraction must update cached and visible reputation", client.state.value.lookup!!.second, client.cachedReporters(phone))
     }
 }

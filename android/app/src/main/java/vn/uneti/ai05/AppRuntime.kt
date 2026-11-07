@@ -11,12 +11,8 @@ class AppRuntime private constructor(private val context: Context) {
         if (inputStatus(original) != null) return null
         return try {
             if (detector == null) {
-                val bytes = context.assets.open("english_char_svm.json").use {
-                    readBounded(it, 16 * 1024 * 1024)
-                }
-                val hash = MessageDigest.getInstance("SHA-256").digest(bytes).joinToString("") {
-                    "%02x".format(it)
-                }
+                val bytes = context.assets.open("english_char_svm.json").use { readBounded(it, 16 * 1024 * 1024) }
+                val hash = MessageDigest.getInstance("SHA-256").digest(bytes).joinToString("") { "%02x".format(it) }
                 require(hash == BuildConfig.MODEL_SHA256)
                 detector = ProductDetector(PortableClassifier(bytes.toString(Charsets.UTF_8)))
             }

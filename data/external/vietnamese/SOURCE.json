@@ -1,0 +1,30 @@
+[
+  {
+    "path": "full_dataset.csv",
+    "url": "https://huggingface.co/datasets/trannguyenthaituan/vietnamese_sms_dataset/resolve/a90e2bd7e8df2376939658075ba8094dcee488ad/full_dataset.csv",
+    "sha256": "8a29d50a6335c8938b8beef0a3daf57d276e880244394da453bc656f5a4c7847",
+    "license": "CC-BY-4.0",
+    "role": "train_grouped"
+  },
+  {
+    "path": "SOURCE_NOTICE.txt",
+    "url": "https://huggingface.co/datasets/trannguyenthaituan/vietnamese_sms_dataset/resolve/a90e2bd7e8df2376939658075ba8094dcee488ad/README.md",
+    "sha256": "55b9f147c83e4222ea6f6165e5e9676ad771cab4216821c6d871c245e21392cd",
+    "license": "CC-BY-4.0",
+    "role": "train_grouped"
+  },
+  {
+    "path": "sample_300.csv",
+    "url": "https://huggingface.co/datasets/trannguyenthaituan/vietnamese_sms_phishing_sample/resolve/ae3a870ca96386725d88337b897cef0ca73ac0d6/sample_300.csv",
+    "sha256": "145f70c4b0fa86bc78176083f24afd0a765a9f183325de687b26633b32a62f80",
+    "license": "CC-BY-4.0",
+    "role": "evaluation"
+  },
+  {
+    "path": "evaluation_NOTICE.txt",
+    "url": "https://huggingface.co/datasets/trannguyenthaituan/vietnamese_sms_phishing_sample/resolve/ae3a870ca96386725d88337b897cef0ca73ac0d6/README.md",
+    "sha256": "eef34138cec00f1676f68fd15737e3ec6a49d713c508c07c0c848d8a7dcb7332",
+    "license": "CC-BY-4.0",
+    "role": "evaluation"
+  }
+]

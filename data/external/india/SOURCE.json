@@ -1,0 +1,15 @@
+{
+  "url": "https://github.com/junioralive/india-spam-sms-classification",
+  "revision": "09137cc677a7d8d24caef0817de41f55a6b3ed44",
+  "license": "MIT",
+  "files": {
+    "spam_ham_india.csv": {
+      "url": "https://raw.githubusercontent.com/junioralive/india-spam-sms-classification/09137cc677a7d8d24caef0817de41f55a6b3ed44/dataset/spam_ham_india.csv",
+      "sha256": "e6a28126d1c4ec9d805a10cd89f2de2bb63650532102e9f35ab05c909c3a79f3"
+    },
+    "LICENSE.txt": {
+      "url": "https://raw.githubusercontent.com/junioralive/india-spam-sms-classification/09137cc677a7d8d24caef0817de41f55a6b3ed44/LICENSE",
+      "sha256": "203ac8eb9e2c16d5cd517c24732f87003f0b9be3e3bfd3ec3253d2cb6b61cb8d"
+    }
+  }
+}

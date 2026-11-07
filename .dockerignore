@@ -1,6 +1,9 @@
 *
 !requirements.txt
 !pyproject.toml
+!README.md
+!licenses/
+!licenses/**
 !src/
 !src/**
 !ml/
@@ -16,6 +19,8 @@
 !results/
 !results/experiments/
 !results/experiments/**
+!results/expanded/
+!results/expanded/**
 !results/figures/
 !results/figures/**
 !results/report/
