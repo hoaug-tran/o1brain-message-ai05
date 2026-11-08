@@ -7,6 +7,36 @@ import org.junit.Test
 
 class ProductDetectorTest {
     @Test
+    fun splitDomainAfterSchemeWarnsWithoutOverridingModelLabel() {
+        val original = "i will send you 10583837$. ho here to take it http://hacker. org/cheating money. if you not got this i will kill you!"
+        val engine = detector()
+        val risk = engine.assess(original)
+        assertEquals("ham", risk.prediction.label)
+        assertEquals("review", risk.decision)
+        assertTrue(risk.reasons.contains("obfuscated_link"))
+        for (text in listOf(
+            "Open https://notice .org/reward",
+            "Open https://notice. org/reward",
+            "Open https://notice . org/reward",
+            "Open www.notice. org/reward",
+            "Open https://login .example.org/reward",
+        )) {
+            assertTrue(text, engine.assess(text).reasons.contains("obfuscated_link"))
+        }
+    }
+
+    @Test
+    fun sentenceAfterCompleteDomainIsNotASeparatedDomain() {
+        for (text in listOf(
+            "Read https://example.org. Thanks for your help.",
+            "Read https://example.com. org is a domain extension.",
+            "Meet at 10. Bring your notes for the meeting.",
+        )) {
+            assertFalse(text, detector().assess(text).reasons.contains("obfuscated_link"))
+        }
+    }
+
+    @Test
     fun reportedOtpAndOrderStayHamWithoutReview() {
         val engine = detector()
         for (text in listOf(
@@ -166,7 +196,7 @@ class ProductDetectorTest {
     @Test
     fun oldProductAssessmentsMustBeReplaced() {
         for (version in
-            listOf(null, "en_old", "policy-1:old", "policy-2:old", "policy-3:expanded", "policy-5:old")) assertTrue(
+            listOf(null, "en_old", "policy-1:old", "policy-2:old", "policy-3:expanded", "policy-5:old", "policy-8:old")) assertTrue(
             assessmentNeedsRefresh(version)
         )
         assertFalse(assessmentNeedsRefresh("$PRODUCT_POLICY_VERSION:current"))

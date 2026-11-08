@@ -2,7 +2,7 @@ package vn.uneti.ai05
 
 import java.text.Normalizer
 
-internal const val PRODUCT_POLICY_VERSION = "policy-8"
+internal const val PRODUCT_POLICY_VERSION = "policy-9"
 
 internal fun assessmentNeedsRefresh(version: String?): Boolean =
     version == null ||
@@ -40,7 +40,9 @@ class ProductDetector(private val english: PortableClassifier) {
             .findAll(normalized).any { it.value.any { char -> char.isWhitespace() } || it.value.startsWith("hxxp", ignoreCase = true) }
         val defangedDomain = Regex("(?i)\\b[a-z0-9-]+\\s*(?:\\[\\s*(?:\\.|dot)\\s*\\]|\\(\\s*(?:\\.|dot)\\s*\\))\\s*[a-z]{2,24}\\b")
             .containsMatchIn(normalized)
-        if (disguisedScheme || defangedDomain) reasons += "obfuscated_link"
+        val spacedDomain = Regex("(?i)\\b(?:https?://|www\\.)[a-z0-9-]+(?:\\s+\\.\\s*|\\.\\s+)(?:[a-z0-9-]+\\.)*[a-z]{2,24}\\b")
+            .containsMatchIn(normalized)
+        if (disguisedScheme || defangedDomain || spacedDomain) reasons += "obfuscated_link"
         if (original.codePoints().anyMatch { Character.getType(it) == Character.FORMAT.toInt() })
             reasons += "hidden_unicode"
         if (
