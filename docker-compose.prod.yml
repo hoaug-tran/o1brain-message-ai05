@@ -1,0 +1,88 @@
+services:
+  demo:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile
+    restart: unless-stopped
+    environment:
+      AI05_ENV: public
+      AI05_DATABASE_URL: sqlite:////data/demo.db
+      AI05_HMAC_KEYSTORE_PATH: /data/device_keys.json
+      O1BRAIN_COMMUNITY_DATA: /data
+    volumes:
+      - o1brain-data:/data
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,noexec,nosuid
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 512m
+    cpus: 1
+    pids_limit: 64
+    logging:
+      driver: local
+      options:
+        max-size: "5m"
+        max-file: "2"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health/ready', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks:
+      - coolify
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.o1brain-demo.rule=Host(`message.trkhoang.dev`)"
+      - "traefik.http.routers.o1brain-demo.entrypoints=https"
+      - "traefik.http.routers.o1brain-demo.tls=true"
+      - "traefik.http.services.o1brain-demo.loadbalancer.server.port=8080"
+
+  community:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile
+    command: ["python", "-m", "uvicorn", "ai05.interfaces.community:create_app", "--factory", "--host", "0.0.0.0", "--port", "8080", "--workers", "1", "--no-access-log", "--limit-concurrency", "32", "--timeout-keep-alive", "5", "--no-proxy-headers"]
+    restart: unless-stopped
+    environment:
+      O1BRAIN_TRUST_CLOUDFLARE: "1"
+      O1BRAIN_COMMUNITY_DATA: /data
+    volumes:
+      - o1brain-data:/data
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,noexec,nosuid
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 512m
+    cpus: 1
+    pids_limit: 64
+    logging:
+      driver: local
+      options:
+        max-size: "5m"
+        max-file: "2"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health/live', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks:
+      - coolify
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.o1brain-community.rule=Host(`community.trkhoang.dev`)"
+      - "traefik.http.routers.o1brain-community.entrypoints=https"
+      - "traefik.http.routers.o1brain-community.tls=true"
+      - "traefik.http.services.o1brain-community.loadbalancer.server.port=8080"
+
+volumes:
+  o1brain-data:
+
+networks:
+  coolify:
+    external: true
